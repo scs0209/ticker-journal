@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>ticker-journal — rough sketch</title>
+  <style>
+    /* intentionally rough — system fonts, gray borders, no color palette */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+      background: #f0f0f0;
+      color: #111;
+      padding: 24px;
+    }
+    h1 {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin: 0 0 8px;
+      text-transform: uppercase;
+    }
+    .meta { font-size: 12px; color: #666; margin-bottom: 28px; }
+    .row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+    .phone {
+      width: 280px;
+      border: 1px solid #999;
+      border-radius: 18px;
+      background: #fff;
+      padding: 10px 10px 16px;
+      min-height: 520px;
+      position: relative;
+    }
+    .phone::before {
+      content: "";
+      display: block;
+      width: 72px;
+      height: 8px;
+      background: #ddd;
+      border-radius: 4px;
+      margin: 4px auto 12px;
+    }
+    .web {
+      width: 420px;
+      border: 1px dashed #888;
+      background: #fff;
+      padding: 12px;
+      min-height: 520px;
+    }
+    .label {
+      font-size: 11px;
+      color: #555;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      border-bottom: 1px solid #bbb;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+    .item {
+      border: 1px solid #bbb;
+      padding: 10px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .item .t { font-weight: 600; }
+    .item .s { font-size: 11px; color: #555; margin-top: 4px; }
+    .fab {
+      border: 1px dashed #666;
+      text-align: center;
+      padding: 10px;
+      font-size: 12px;
+      margin-top: 12px;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      font-size: 11px;
+      margin-bottom: 10px;
+    }
+    .tabs span {
+      border: 1px solid #aaa;
+      padding: 4px 8px;
+    }
+    .tabs .on { border-width: 2px; font-weight: 600; }
+    .timeline .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border: 1px solid #333;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .webview {
+      border: 2px dashed #777;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #444;
+      margin: 10px 0;
+    }
+    .note { font-size: 11px; color: #444; margin-top: 16px; max-width: 720px; line-height: 1.45; }
+    .hand { font-style: italic; color: #333; }
+  </style>
+</head>
+<body>
+  <!-- Design decision: three panes = core loop only. No settings, no AI briefing. -->
+  <h1>Ticker Journal — B-lite sketch</h1>
+  <div class="meta">rough wireframe · Expo mobile + Next web · same account · chart = WebView</div>
+
+  <div class="row">
+    <!-- Screen 1: Watchlist / home -->
+    <div class="phone">
+      <div class="label">App · 1) 종목 목록</div>
+      <div class="nav">
+        <span>관심종목</span>
+        <span>+ 추가</span>
+      </div>
+      <div class="item">
+        <div class="t">005930 삼성전자</div>
+        <div class="s">오늘 메모 1 · 링크 2 · 매매기록 없음</div>
+      </div>
+      <div class="item">
+        <div class="t">AAPL Apple</div>
+        <div class="s">어제 매수 이유 적음 · 링크 1</div>
+      </div>
+      <div class="item">
+        <div class="t">TSLA</div>
+        <div class="s">비어 있음 — 탭해서 첫 메모</div>
+      </div>
+      <div class="fab">[ 공유시트로 링크 저장 — v1.1 ]</div>
+      <!-- Empty state paranoia: zero tickers → one CTA only, no empty charts -->
+    </div>
+
+    <!-- Screen 2: Ticker detail timeline -->
+    <div class="phone">
+      <div class="label">App · 2) 종목 상세 타임라인</div>
+      <div class="nav">
+        <span>← 목록</span>
+        <span>AAPL</span>
+      </div>
+      <div class="webview">WebView · TradingView / 차트 임베드</div>
+      <div class="tabs">
+        <span class="on">전체</span>
+        <span>링크</span>
+        <span>메모</span>
+        <span>매매</span>
+      </div>
+      <div class="timeline">
+        <div class="item">
+          <span class="dot"></span>
+          <span class="t">매수</span> · 어제 21:04
+          <div class="s">“실적 전 IR 보고 분할매수. 손절 178.”</div>
+        </div>
+        <div class="item">
+          <span class="dot"></span>
+          <span class="t">링크</span> · 어제 09:12
+          <div class="s">bloomberg.com/…earnings — “가이던스 상향”</div>
+        </div>
+        <div class="item">
+          <span class="dot"></span>
+          <span class="t">메모</span> · 월 3
+          <div class="s">경쟁사 마진 압박 체크할 것</div>
+        </div>
+      </div>
+      <div class="fab">+ 메모 / 링크 / 매매기록</div>
+    </div>
+
+    <!-- Screen 3: Web archive -->
+    <div class="web">
+      <div class="label">Web · 3) 정리·검색 (같은 로그인)</div>
+      <div class="nav">
+        <span>Ticker Journal</span>
+        <span>ayaan@…</span>
+      </div>
+      <div class="item">
+        <div class="t">검색: “가이던스” / 태그 / 종목</div>
+        <div class="s">폰에서 넣은 기록이 여기 그대로</div>
+      </div>
+      <div class="item">
+        <div class="t">AAPL 타임라인 (데스크톱 폭)</div>
+        <div class="s">스크랩 아카이브 · 매매 이유 표 · 나중에 AI 주간 브리핑 자리</div>
+      </div>
+      <div class="item hand">
+        v2 슬롯: “이번 주 브리핑 생성” 버튼 (지금은 비활성/숨김)
+      </div>
+      <!-- Subtraction: no social feed, no broker sync in MVP -->
+    </div>
+  </div>
+
+  <p class="note">
+    <strong>흐름:</strong> 목록에서 종목 탭 → 차트(WebView) 아래 타임라인 → +로 메모·링크·매매 이유.
+    웹은 같은 데이터로 검색·정리. 스토어 심사용으로 빈 목록/에러/로그아웃 상태는 반드시 존재.
+  </p>
+</body>
+</html>

@@ -35,8 +35,9 @@ pnpm test:e2e     # Playwright (web)
 
 구현과 함께 문서를 갱신한다.
 
-- `docs/portfolio.md` — 과정 / 어려웠던 점 / 배운 점
-- `docs/resume-bullets.md` — 이력서 복붙용 불릿
+- `docs/portfolio.md` — 과정 / 어려웠던 점 / 배운 점 / **와이어·머메이드**
+- `docs/resume-bullets.md` — 이력서 복붙용 수치 불릿
+- `docs/assets/` — 와이어프레임 PNG·HTML
 
 ## 로드맵
 
