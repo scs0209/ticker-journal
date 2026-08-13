@@ -9,7 +9,7 @@
 | 역할 | 개인 프로젝트 (기획 · 설계 · 풀스택 · 모바일 · 배포) |
 | 스택 | Expo (React Native), Expo Router, Next.js, TypeScript, Zod, pnpm monorepo, Turborepo, WebView, Vitest, RTL, jest-expo, Playwright, (예정) Supabase, EAS Submit |
 | 레포 | https://github.com/scs0209/ticker-journal |
-| 설계 문서 | `docs/architecture.md` · `~/.gstack/projects/ayaan/ayaan-unknown-design-20260811-074915.md` |
+| 설계 문서 | `docs/design.md` · `docs/architecture.md` |
 
 ---
 
@@ -219,3 +219,4 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 | 2026-08-11 | 이력서 문구를 수치·임팩트 지표 중심으로 재작성 |
 | 2026-08-11 | 와이어프레임·머메이드(플로우/아키텍처/ER/로드맵/테스트) 섹션 추가 |
 | 2026-08-13 | Phase 0 전 `docs/architecture.md` 기준선 추가 |
+| 2026-08-14 | office-hours 설계 문서를 `docs/design.md`로 레포에 포함 |

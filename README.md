@@ -2,8 +2,8 @@
 
 종목 단위 리서치 저널 — Expo(React Native) + Next.js 모노레포.
 
+- 설계: [`docs/design.md`](docs/design.md)
 - 아키텍처 (Phase 0 기준선): [`docs/architecture.md`](docs/architecture.md)
-- 설계 메모(로컬): `~/.gstack/projects/ayaan/ayaan-unknown-design-20260811-074915.md`
 
 ## 구조
 
@@ -50,6 +50,8 @@ pnpm typecheck
 
 구현과 함께 문서를 갱신한다.
 
+- `docs/design.md` — office-hours 설계 (범위·스키마·화면)
+- `docs/architecture.md` — Phase 0 아키텍처 기준선
 - `docs/portfolio.md` — 과정 / 어려웠던 점 / 배운 점 / **와이어·머메이드**
 - `docs/resume-bullets.md` — 이력서 복붙용 수치 불릿
 - `docs/assets/` — 와이어프레임 PNG·HTML
