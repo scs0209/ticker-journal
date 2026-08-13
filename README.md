@@ -2,7 +2,8 @@
 
 종목 단위 리서치 저널 — Expo(React Native) + Next.js 모노레포.
 
-디자인 문서: `~/.gstack/projects/ayaan/ayaan-unknown-design-20260811-074915.md`
+- 아키텍처 (Phase 0 기준선): [`docs/architecture.md`](docs/architecture.md)
+- 설계 메모(로컬): `~/.gstack/projects/ayaan/ayaan-unknown-design-20260811-074915.md`
 
 ## 구조
 
