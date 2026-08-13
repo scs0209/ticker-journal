@@ -22,7 +22,21 @@ pnpm dev:web      # http://localhost:3000
 pnpm dev:mobile   # Expo
 pnpm test         # Vitest + jest-expo
 pnpm test:e2e     # Playwright (web)
+pnpm check        # Biome lint + format check
+pnpm check:fix   # Biome auto-fix
+pnpm typecheck
 ```
+
+## 린트 · 포맷
+
+[3d-blog](https://github.com/scs0209/3d-blog)와 같은 Biome 2.5.7 설정 (`biome.json`). VS Code는 `.vscode/settings.json`에서 Biome 기본 포맷터를 사용한다.
+
+| 스크립트 | 설명 |
+|----------|------|
+| `pnpm format` | 포맷 적용 |
+| `pnpm format:check` | 포맷만 검사 |
+| `pnpm lint:biome` | 린트 |
+| `pnpm check` / `check:fix` | 린트+포맷 |
 
 ## 테스트
 

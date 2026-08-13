@@ -16,13 +16,14 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "dev": "tsc -p tsconfig.json --watch",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "lint": "biome lint ."
   },
   "dependencies": {
     "zod": "^3.25.67"
   },
   "devDependencies": {
-    "typescript": "^5.8.3",
+    "typescript": "~7.0.2",
     "vitest": "^3.2.4"
   }
 }

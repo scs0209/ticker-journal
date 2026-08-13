@@ -23,7 +23,7 @@
     "jest": "^29.7.0",
     "jest-expo": "~57.0.0",
     "react-test-renderer": "19.2.3",
-    "typescript": "~6.0.3"
+    "typescript": "~7.0.2"
   },
   "scripts": {
     "start": "expo start",
@@ -31,7 +31,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
-    "lint": "echo \"lint: mobile skipped\"",
+    "lint": "biome lint .",
     "test": "jest"
   },
   "private": true

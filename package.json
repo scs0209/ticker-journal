@@ -10,16 +10,17 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "test:e2e": "pnpm --filter @ticker-journal/web test:e2e"
+    "test:e2e": "pnpm --filter @ticker-journal/web test:e2e",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint:biome": "biome lint .",
+    "lint:biome:fix": "biome lint --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --write ."
   },
   "devDependencies": {
+    "@biomejs/biome": "2.5.7",
     "turbo": "^2.5.4",
-    "typescript": "^5.8.3"
-  },
-  "pnpm": {
-    "overrides": {
-      "react": "19.2.3",
-      "react-dom": "19.2.3"
-    }
+    "typescript": "~7.0.2"
   }
 }

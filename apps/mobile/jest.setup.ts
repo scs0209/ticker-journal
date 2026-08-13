@@ -1,1 +1,1 @@
-import "@testing-library/react-native/matchers";
+import '@testing-library/react-native/matchers';
