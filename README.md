@@ -22,7 +22,7 @@ pnpm dev:web      # http://localhost:3000
 pnpm dev:mobile   # Expo
 pnpm test         # Vitest + jest-expo
 pnpm test:e2e     # Playwright (web)
-pnpm ci           # Biome + typecheck + unit
+pnpm run ci       # Biome + typecheck + unit
 pnpm check        # Biome lint + format check
 pnpm check:fix   # Biome auto-fix
 pnpm typecheck

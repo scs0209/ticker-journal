@@ -182,6 +182,7 @@ flowchart TB
 
 - 라우터 mock 없이 못 도는 모바일 화면 테스트는 삭제. 화면은 Maestro E2E
 - GitHub Actions: `pnpm check` · `typecheck` · `test` + Playwright E2E
+- Husky pre-commit: `pnpm run ci` (E2E는 CI만)
 
 ### 1.8 이후 로드맵
 

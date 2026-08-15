@@ -33,7 +33,7 @@
 ```bash
 pnpm test              # 단위 + 컴포넌트
 pnpm test:e2e          # Playwright (web)
-pnpm ci                # Biome + typecheck + unit
+pnpm run ci            # Biome + typecheck + unit (pre-commit 훅과 동일)
 ```
 
-CI: `.github/workflows/ci.yml` — `check` · `typecheck` · `test` + Playwright E2E.
+로컬: Husky `pre-commit`이 `pnpm run ci`를 실행한다. Playwright E2E는 브라우저 설치 때문에 커밋 훅에 넣지 않고 GitHub Actions만 돌린다.
