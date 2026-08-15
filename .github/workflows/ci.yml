@@ -34,5 +34,6 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @ticker-journal/shared build
       - run: pnpm --filter @ticker-journal/web exec playwright install --with-deps chromium
       - run: pnpm test:e2e
