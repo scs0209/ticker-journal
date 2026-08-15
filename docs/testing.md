@@ -1,24 +1,39 @@
-# 테스트 전략
+# 테스트 기준
 
-| 영역 | 도구 | 이유 |
-|------|------|------|
-| `packages/shared` | **Vitest** | Zod/순수 로직. 가장, RN 불필요 |
-| `apps/web` 컴포넌트 | **Vitest + RTL** | Next/React DOM과 궁합 좋음 |
-| `apps/web` E2E | **Playwright** | 브라우저 실사용 플로우 |
-| `apps/mobile` | **jest-expo + RNTL** | Expo 공식 경로. Vitest는 RN 네이티브 모듈/모킹이 아직 번거로움 |
+테스트를 추가하기 전에 아래 질문을 통과해야 한다. 통과 못하면 작성하지 않는다.
 
-## RN을 Vitest로 안 간 이유
+1. **깨지면 사용자가 알아채는가?** (스키마 변환, 잘못된 화면, 잘못된 리다이렉트)
+2. **이미 위 레이어가 같은 동작을 보는가?** (E2E가 커버하면 컴포넌트/단위를 중복하지 않는다)
+3. **성공 조건이 목 호출인가?** 그러면 잘못된 테스트다. 화면 텍스트, URL, 순수 함수 반환값만 assert한다.
 
-- Expo/RN 생태계 예제·모킹(`jest-expo`)이 Jest 기준
-- `react-native` / Expo Router / WebView는 Jest transform·preset이 검증됨
-- 이력서에는 “계층별 테스트(단위·컴포넌트·E2E)”가 도구 통일보다 설득력 있음
+`describe`/`it`/`test` 설명은 **한국어**. 대상 이름(`CreateTickerSchema`, `HomeView`)만 영어 식별자를 쓴다.
 
-E2E 모바일은 나중에 **Maestro** 또는 Detox를 검토 (스토어 전 스모크).
+## 레이어
+
+| 레이어 | 대상 | 도구 | 하지 않는 것 |
+|--------|------|------|----------------|
+| 단위 | Zod, `buildChartHtml`, `resolveAuthCallbackPath` | Vitest / Jest | supabase/OTP를 목킹하고 `toHaveBeenCalled` |
+| 컴포넌트 | 웹 순수 뷰만 (`HomeView` props → 텍스트) | RTL | 라우터/Auth를 목킹한 화면 테스트 |
+| E2E | 웹 사용자 플로우: 홈, 로그인 페이지 | Playwright | 매직링크 메일·실세션 (인박스 없음). 모바일은 Maestro 전까지 E2E 없음 |
+
+웹 페이지 플로우 = Playwright. 웹 RTL은 **props → 텍스트**인 순수 뷰만 (예: 로그인된 `HomeView` 종목). 라우팅·폼 제출·Auth는 E2E.
+
+## 지금 허용된 테스트
+
+- `packages/shared` — 스키마 정규화/거부
+- `apps/mobile/lib/chart.ts` — US 위젯 / KR fallback HTML
+- `apps/web` `HomeView` — 로그인된 종목 표시 (E2E에 세션 없음)
+- `resolveAuthCallbackPath` — 콜백 성공/실패 경로
+- Playwright — `/`, `/login`이 뜨는지
+
+모바일 화면(관심종목·상세)은 라우터 없이 마운트되지 않는다. 구현 mock으로 목록을 그리는 테스트는 하지 않고, Maestro E2E에서 다룬다.
 
 ## 명령
 
 ```bash
-pnpm test              # 전 패키지 unit/component
+pnpm test              # 단위 + 컴포넌트
 pnpm test:e2e          # Playwright (web)
-pnpm --filter @ticker-journal/mobile test
+pnpm ci                # Biome + typecheck + unit
 ```
+
+CI: `.github/workflows/ci.yml` — `check` · `typecheck` · `test` + Playwright E2E.

@@ -7,14 +7,7 @@ vi.mock('@/app/login/actions', () => ({
 }));
 
 describe('HomeView', () => {
-  it('renders archive scaffold copy when logged out', () => {
-    render(<HomeView configured />);
-    expect(screen.getByRole('heading', { name: '웹 아카이브' })).toBeInTheDocument();
-    expect(screen.getByText(/Ticker Journal/i)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: '로그인' })).toBeInTheDocument();
-  });
-
-  it('renders tickers when logged in', () => {
+  it('로그인하면 관심종목을 보여준다', () => {
     render(
       <HomeView
         configured
