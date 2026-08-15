@@ -58,7 +58,18 @@ pnpm typecheck
 
 ## 로드맵
 
-- Phase 0: Auth + CRUD (앱)
+- Phase 0: Auth + CRUD (앱) — 브랜치 `feat/phase-0-auth-crud`
 - Phase 1: 웹 검색/상세
 - Phase 2: App Store + Play Store
 - v1.1 공유 시트 / v2 AI 주간 브리핑
+
+### Phase 0 로컬 설정
+
+1. [Supabase](https://supabase.com) 프로젝트 생성
+2. SQL Editor 또는 CLI로 `supabase/migrations/20260813100000_init.sql` 적용
+3. Auth → URL Configuration에 추가:
+   - `tickerjournal://auth/callback` (모바일)
+   - `http://localhost:3000/auth/callback` (웹)
+4. `apps/mobile/.env` — `EXPO_PUBLIC_SUPABASE_URL` / `EXPO_PUBLIC_SUPABASE_KEY`
+5. `apps/web/.env` — `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+6. `pnpm dev:mobile` / `pnpm dev:web` 후 매직링크 로그인

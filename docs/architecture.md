@@ -248,7 +248,7 @@ entries INSERT: ticker_id 가 본인 tickers 행이어야 함 (존재 + user_id 
 | 변수 | 사용처 |
 |------|--------|
 | `EXPO_PUBLIC_SUPABASE_URL` | mobile |
-| `EXPO_PUBLIC_SUPABASE_ANON_KEY` | mobile |
+| `EXPO_PUBLIC_SUPABASE_KEY` | mobile (publishable / anon) |
 | `NEXT_PUBLIC_SUPABASE_URL` | web |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | web |
 
@@ -352,14 +352,14 @@ Phase 0 추가 권장:
 
 구현 시작 전/중 이 목록을 닫는다.
 
-- [ ] Supabase 프로젝트 생성, `.env` 채움 (example 기준)
-- [ ] `supabase/migrations` 에 tickers/entries + RLS
-- [ ] mobile `lib/supabase.ts` + Auth 화면/세션 게이트
-- [ ] 관심종목 CRUD (placeholder 제거)
-- [ ] 엔트리 CRUD + 필터 칩 동작
-- [ ] US TradingView WebView / KR fallback
-- [ ] shared·mobile 테스트 갱신
-- [ ] `docs/portfolio.md` · `docs/resume-bullets.md` 갱신
+- [x] Supabase 프로젝트 생성, `.env` 채움 (example 기준) — **로컬 키는 사용자 환경**
+- [x] `supabase/migrations` 에 tickers/entries + RLS
+- [x] mobile `lib/supabase.ts` + Auth 화면/세션 게이트
+- [x] 관심종목 CRUD (placeholder 제거)
+- [x] 엔트리 CRUD + 필터 칩 동작
+- [x] US TradingView WebView / KR fallback
+- [x] shared·mobile 테스트 갱신
+- [x] `docs/portfolio.md` · `docs/resume-bullets.md` 갱신
 
 ---
 
