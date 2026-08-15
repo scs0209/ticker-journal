@@ -9,7 +9,7 @@
 
 ## 지금 당장 쓸 수 있는 수치 (Phase 0 기준)
 
-- 웹·모바일·공유 패키지 **3앱 모노레포**로 도메인 스키마를 한곳(`packages/shared`)에 두고, 단위·컴포넌트·E2E **4계층** 테스트 **13+ 케이스** 통과 (Vitest 7 + 웹 RTL 2 + Playwright 1 + jest-expo 3)
+- 웹·모바일·공유 패키지 **3앱 모노레포**로 도메인 스키마를 한곳(`packages/shared`)에 두고, 단위·컴포넌트·E2E **4계층** 테스트 + **GitHub Actions CI** (`check` / `typecheck` / `test` / Playwright)
 - 관심종목 → 종목 상세(WebView) → 웹 아카이브까지 **핵심 루프 3화면**으로 MVP 고정, 브로커 SaaS 범위는 제외
 - Supabase **매직링크 Auth + RLS**로 앱·웹 **동일 계정** 경로 확보: 모바일 CRUD(관심종목·memo/link/trade) + 웹 관심종목 조회
 - 차트는 TradingView WebView(US) / KR fallback으로 분리해 네이티브 차트 공수를 제외하고 Phase 0 일정 유지
@@ -28,7 +28,7 @@
 | 본인 실사용 | 관심종목 **≥10**, 주간 entry **≥20** | “본인 워크플로로 종목 N개·주간 기록 M건 운영” | 마이그레이션 적용 후 채움 |
 | 입력 속도 | 노션 대비 기록 시간 **X%↓** 또는 **N초** | “모바일 입력으로 스크랩·매매 이유 기록 평균 Ns” | 미측정 |
 | 검색 회수 | 웹에서 과거 메모 찾기 **성공률** / 시간 | “웹 검색으로 과거 리서치 회수 시간 Y분→Z분” | Phase 1 |
-| 품질 | 테스트 **N건**, CI 통과, 크래시 **0** | “단위·E2E N건·스토어 심사용 경로 충족” | **13+** 로컬 green |
+| 품질 | 테스트 **N건**, CI 통과, 크래시 **0** | “단위·E2E N건·스토어 심사용 경로 충족” | GitHub Actions CI + 로컬 green |
 | 범위 통제 | 제외한 기능 **K개**, 출시까지 **D주** | “브로커 연동 등 K개 제외, D주 내 스토어 제출” | 브로커·AI 브리핑 제외 |
 
 ---
@@ -38,7 +38,7 @@
 | 약함 (구현 나열) | 강함 (수치·결과) |
 |------------------|------------------|
 | Expo Router로 네비게이션 구성 | 핵심 플로우 **3화면**으로 MVP 고정 후 스토어 **2곳** 배포 목표 |
-| Vitest, Playwright 도입 | 테스트 **4계층 / 13+건**으로 회귀 방지, React·TS 버전 정렬 후 전 패키지 green |
+| Vitest, Playwright 도입 | 테스트 **4계층** + GitHub Actions CI로 회귀 방지, React·TS 버전 정렬 후 전 패키지 green |
 | Supabase CRUD 구현 | 앱·웹 **동일 계정** + RLS로 종목 목록 동기화 경로 확보 |
 | WebView로 차트 넣음 | 차트는 WebView로 분리해 네이티브 범위 **축소**, Phase 0에서 US embed / KR fallback |
 
@@ -50,7 +50,7 @@
 
 - `[x]` Expo·Next **동일 Supabase 프로젝트**에 매직링크 Auth를 붙이고, Postgres `tickers`/`entries` + RLS로 모바일 CRUD·웹 관심종목 조회까지 연결
 - `[x]` 관심종목·엔트리(memo/link/trade) 입력 경로를 Zod 공유 스키마로 검증하고, US TradingView WebView / KR fallback으로 차트 표면을 분리
-- `[x]` 모노레포 테스트 **4계층 / 13+건** + Biome + TypeScript 7으로 품질 게이트 유지
+- `[x]` 모노레포 테스트 **4계층** + GitHub Actions(`check`/`typecheck`/`test`/E2E) + Biome + TypeScript 7으로 품질 게이트 유지
 - `[ ]` 본인 계정으로 관심종목 **__**개, entry **__**건 생성 후 웹에서 동일 목록 end-to-end 검증 (SQL 적용·실로그인 후 채움)
 
 ### Phase 1 (웹 검색·상세)
@@ -68,7 +68,7 @@
 
 1. 문제: 노션+시트에 리서치가 흩어짐  
 2. 결과: 종목 타임라인 앱+웹, (목표) 스토어 **2곳**, 실사용 종목 **N**·주간 **M**  
-3. 어떻게: MVP **3화면**, 테스트 **4계층/13+**, Zod 1곳, Supabase Auth+RLS  
+3. 어떻게: MVP **3화면**, 테스트 **4계층 + CI**, Zod 1곳, Supabase Auth+RLS  
 4. 링크: 레포 / 웹 / (스토어)
 
 ---

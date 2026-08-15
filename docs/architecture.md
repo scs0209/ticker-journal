@@ -294,12 +294,13 @@ sequenceDiagram
 | 도메인 | `packages/shared` | Vitest |
 | 웹 컴포넌트 | `apps/web` | Vitest + RTL |
 | 웹 E2E | `apps/web/e2e` | Playwright |
-| 모바일 화면 | `apps/mobile` | jest-expo + RNTL |
+| 모바일 단위 | `apps/mobile` | jest-expo (`buildChartHtml`) |
+| 모바일 화면 | (예정) Maestro | E2E |
 
 Phase 0 추가 권장:
 
 - shared: Create* / payload check 케이스 보강
-- mobile: 로그인 게이트·CRUD 성공/실패 화면 테스트 (모킹)
+- 모바일 화면: Maestro 스모크 (라우터 mock 컴포넌트 테스트는 하지 않음)
 - (나중) Maestro/Detox 스토어 전 스모크
 
 ---
@@ -360,6 +361,7 @@ Phase 0 추가 권장:
 - [x] US TradingView WebView / KR fallback
 - [x] shared·mobile 테스트 갱신
 - [x] `docs/portfolio.md` · `docs/resume-bullets.md` 갱신
+- [x] GitHub Actions CI (`check` / `typecheck` / `test` / Playwright E2E)
 
 ---
 
@@ -368,3 +370,4 @@ Phase 0 추가 권장:
 | 날짜 | 내용 |
 |------|------|
 | 2026-08-13 | Phase 0 전 기준선 문서 초안 작성 |
+| 2026-08-15 | Auth/CRUD 테스트 보강, GitHub Actions CI 추가 |

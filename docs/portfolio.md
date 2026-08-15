@@ -115,18 +115,18 @@ gantt
 ```mermaid
 flowchart TB
   E2E[Playwright · 웹 E2E]
-  COMP[RTL · 웹 컴포넌트<br/>RNTL · 모바일 화면]
-  UNIT[Vitest · shared Zod]
+  COMP[RTL · 웹 순수 뷰]
+  UNIT[Vitest · Zod · 차트 HTML · 콜백 경로]
 
   E2E --> COMP --> UNIT
 ```
 
 | 영역 | 도구 | 역할 |
 |------|------|------|
-| shared | Vitest | 스키마·도메인 규칙 (**7**) |
-| web | Vitest + RTL | UI 계약 (**2**) |
-| web | Playwright | 브라우저 플로우 (**1**) |
-| mobile | jest-expo + RNTL | 화면·차트 HTML (**3**) |
+| shared | Vitest | 스키마·도메인 규칙 |
+| web | Vitest + RTL | 로그인된 HomeView 종목 표시 |
+| web | Playwright | `/`, `/login` |
+| mobile | jest-expo | `buildChartHtml` (화면은 Maestro 예정) |
 
 ---
 
@@ -178,7 +178,12 @@ flowchart TB
 - `/login` 매직링크, `/auth/callback` 코드 교환
 - 홈에서 동일 계정 관심종목 조회 (검색·상세는 Phase 1)
 
-### 1.7 이후 로드맵
+### 1.7 테스트 · CI (2026-08-15)
+
+- 라우터 mock 없이 못 도는 모바일 화면 테스트는 삭제. 화면은 Maestro E2E
+- GitHub Actions: `pnpm check` · `typecheck` · `test` + Playwright E2E
+
+### 1.8 이후 로드맵
 
 - [x] Phase 0: Supabase Auth + 모바일 CRUD + 웹 세션/목록 (`feat/phase-0-auth-crud`)
 - [ ] Phase 1: 웹 entries 검색·종목 상세
@@ -228,7 +233,7 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 - Expo Router · 매직링크 Auth · 관심종목/엔트리 CRUD · TradingView WebView
 - Next.js `@supabase/ssr` 로그인·콜백·관심종목 조회
 - Postgres 스키마 + RLS, Zod 공유 스키마로 입력 검증
-- Vitest / RTL / Playwright / jest-expo 테스트 계층 (**13+** 케이스)
+- Vitest / RTL / Playwright / jest-expo 테스트 계층 + GitHub Actions CI
 - (예정) entries 웹 검색, 스토어 2곳 배포
 
 ### 성과 / 임팩트
@@ -250,3 +255,4 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 | 2026-08-13 | Biome · TypeScript 7 도입 |
 | 2026-08-13 | Phase 0: migrations/RLS, 모바일 Auth·CRUD·차트, 웹 세션·관심종목 조회 |
 | 2026-08-14 | office-hours 설계 문서를 `docs/design.md`로 레포에 포함 |
+| 2026-08-15 | Auth/CRUD 테스트 보강, GitHub Actions CI |
