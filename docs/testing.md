@@ -22,7 +22,7 @@
 
 - `packages/shared` — 스키마 정규화/거부
 - `apps/mobile/lib/chart.ts` — US 위젯 / KR fallback HTML
-- `apps/web` `HomeView` — 로그인된 종목 표시 (E2E에 세션 없음)
+- `apps/web` `HomeView` — 로그인된 종목 표시, 조회 실패 메시지 (E2E에 세션 없음)
 - `resolveAuthCallbackPath` — 콜백 성공/실패 경로
 - Playwright — `/`, `/login`이 뜨는지
 

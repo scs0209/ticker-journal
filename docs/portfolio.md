@@ -100,10 +100,11 @@ gantt
   dateFormat  YYYY-MM-DD
   section Done
   Scaffold + tests + Biome/TS7 :done, s0, 2026-08-11, 3d
-  section Phase 0
-  Auth + CRUD mobile + web session :active, p0, 2026-08-13, 7d
+  Auth + CRUD 구현 (앱·웹 세션) :done, p0, 2026-08-13, 3d
+  section Phase 0 remaining
+  실계정 매직링크 E2E 검증 :active, p0e, 2026-08-15, 2d
   section Phase 1
-  Web search + detail        :p1, after p0, 7d
+  Web search + detail        :p1, after p0e, 7d
   section Phase 2
   Store submit iOS+Android   :p2, after p1, 21d
   section Later
@@ -186,7 +187,8 @@ flowchart TB
 
 ### 1.8 이후 로드맵
 
-- [x] Phase 0: Supabase Auth + 모바일 CRUD + 웹 세션/목록 (`feat/phase-0-auth-crud`)
+- [x] Phase 0 구현: Supabase Auth + 모바일 CRUD + 웹 세션/목록 (`feat/phase-0-auth-crud`)
+- [ ] Phase 0 실계정: 매직링크 로그인 후 웹·앱 동일 목록 E2E 검증
 - [ ] Phase 1: 웹 entries 검색·종목 상세
 - [ ] Phase 2: EAS → App Store / Play Store
 - [ ] v1.1 공유 시트 / v2 AI 브리핑
@@ -205,7 +207,10 @@ flowchart TB
 | RN 테스트 | Vitest 통일 유혹 | mobile만 jest-expo + RNTL |
 | Phase 0 | Supabase 없이 앱만 만들면 E2E 검증 불가 | 마이그레이션·RLS·env를 코드와 같이 고정 |
 | Next 16 | `middleware` deprecation | `proxy.ts`로 세션 갱신 이전 |
-| Auth | 모바일/웹 redirect URL이 다름 | `tickerjournal://…` + `localhost:3000/auth/callback` 둘 다 등록 |
+| Auth | 모바일/웹 redirect URL이 다름 | `tickerjournal://…` + Expo Go `exp://…` + `localhost:3000/auth/callback` 등록 |
+| Auth | `detectSessionInUrl: false`면 딥링크만으로는 세션이 안 생김 | `Linking`으로 code 교환·토큰 `setSession` |
+| CLI | `config.toml`을 JSON으로 두면 supabase CLI가 못 읽음 | 실제 TOML로 교체 |
+| 차트 | HTML escape를 JS 문자열에 쓰면 쿼트 인젝션·이중 인코딩 | `JSON.stringify`로 위젯 심볼 삽입 |
 
 ---
 
@@ -218,6 +223,8 @@ flowchart TB
 - 다이어그램을 문서에 두면 면접·노션 포트폴리오에 바로 붙일 수 있다.
 - **문서 동기화**: 코드 마일스톤마다 `portfolio.md` / `resume-bullets.md`를 같이 갱신하지 않으면 이력서 문장이 코드보다 뒤처진다.
 - Next 16에서는 edge 세션 갱신을 `proxy` 컨벤션으로 맞추는 편이 경고·미래 호환에 유리하다.
+- RN에서 매직링크는 redirect URL만 맞추는 게 아니라 **콜백 URL → `exchangeCodeForSession` / `setSession`** 까지 연결해야 한다.
+- `@supabase/ssr`가 넘기는 no-cache 헤더를 응답에 안 붙이면 세션 쿠키가 CDN에 캐시될 수 있다.
 
 ---
 
@@ -257,3 +264,4 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 | 2026-08-13 | Phase 0: migrations/RLS, 모바일 Auth·CRUD·차트, 웹 세션·관심종목 조회 |
 | 2026-08-14 | office-hours 설계 문서를 `docs/design.md`로 레포에 포함 |
 | 2026-08-15 | Auth/CRUD 테스트 보강, GitHub Actions CI |
+| 2026-08-15 | CodeRabbit: 매직링크 콜백, 차트 JS 삽입, 세션 캐시 헤더, 조회 에러 상태 |

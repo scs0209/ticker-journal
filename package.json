@@ -6,6 +6,7 @@
     "dev": "turbo run dev",
     "dev:web": "pnpm --filter @ticker-journal/web dev",
     "dev:mobile": "pnpm --filter @ticker-journal/mobile start",
+    "dev:ios": "pnpm --filter @ticker-journal/mobile exec expo start --ios",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",

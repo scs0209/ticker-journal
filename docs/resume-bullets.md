@@ -9,7 +9,7 @@
 
 ## 지금 당장 쓸 수 있는 수치 (Phase 0 기준)
 
-- 웹·모바일·공유 패키지 **3앱 모노레포**로 도메인 스키마를 한곳(`packages/shared`)에 두고, 단위·컴포넌트·E2E **4계층** 테스트 + **GitHub Actions CI** (`check` / `typecheck` / `test` / Playwright)
+- 웹·모바일 **2앱** + 공유 패키지 **1개** 모노레포로 도메인 스키마를 한곳(`packages/shared`)에 두고, 단위·컴포넌트·E2E **4계층** 테스트 + **GitHub Actions CI** (`check` / `typecheck` / `test` / Playwright)
 - 관심종목 → 종목 상세(WebView) → 웹 아카이브까지 **핵심 루프 3화면**으로 MVP 고정, 브로커 SaaS 범위는 제외
 - Supabase **매직링크 Auth + RLS**로 앱·웹 **동일 계정** 경로 확보: 모바일 CRUD(관심종목·memo/link/trade) + 웹 관심종목 조회
 - 차트는 TradingView WebView(US) / KR fallback으로 분리해 네이티브 차트 공수를 제외하고 Phase 0 일정 유지

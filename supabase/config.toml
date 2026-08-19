@@ -1,6 +1,4 @@
-{
-  "project_id": "ticker-journal",
-  "db": {
-    "major_version": 15
-  }
-}
+project_id = "ticker-journal"
+
+[db]
+major_version = 15
