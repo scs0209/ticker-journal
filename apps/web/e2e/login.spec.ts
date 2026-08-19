@@ -6,3 +6,8 @@ test('로그인 페이지가 열린다', async ({ page }) => {
   await expect(page.getByLabel('이메일')).toBeVisible();
   await expect(page.getByRole('button', { name: '매직링크 보내기' })).toBeVisible();
 });
+
+test('콜백 실패 시 안내를 보여준다', async ({ page }) => {
+  await page.goto('/login?error=auth');
+  await expect(page.getByText('로그인에 실패했습니다')).toBeVisible();
+});

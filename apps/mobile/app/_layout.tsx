@@ -12,8 +12,12 @@ const LogoutButton = () => {
   return (
     <Pressable
       onPress={async () => {
-        await signOut();
-        router.replace('/login');
+        try {
+          await signOut();
+          router.replace('/login');
+        } catch {
+          // 세션이 남아 있으면 로그인 화면으로 보내지 않는다.
+        }
       }}
       accessibilityRole='button'
       accessibilityLabel='로그아웃'
@@ -30,6 +34,7 @@ export default function RootLayout() {
       <StatusBar style='dark' />
       <Stack>
         <Stack.Screen name='login' options={{ headerShown: false }} />
+        <Stack.Screen name='auth/callback' options={{ headerShown: false }} />
         <Stack.Screen
           name='index'
           options={{

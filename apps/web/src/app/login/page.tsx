@@ -1,16 +1,28 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useState } from 'react';
 
 import { createClient } from '@/lib/supabase/client';
 import { getSupabaseEnv } from '@/lib/supabase/env';
 
+const CALLBACK_ERROR = '로그인에 실패했습니다. 매직링크는 요청한 같은 브라우저에서 열어 주세요.';
+
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const { configured } = getSupabaseEnv();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(searchParams.get('error') === 'auth' ? CALLBACK_ERROR : null);
   const [pending, setPending] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {

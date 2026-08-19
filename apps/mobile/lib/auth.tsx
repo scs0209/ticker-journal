@@ -1,6 +1,8 @@
 import type { Session, User } from '@supabase/supabase-js';
+import * as Linking from 'expo-linking';
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
+import { parseAuthCallbackUrl } from './auth-callback';
 import { isSupabaseConfigured, supabase } from './supabase';
 
 type AuthContextValue = {
@@ -14,6 +16,24 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+const consumeAuthCallbackUrl = async (url: string | null) => {
+  if (!url || !isSupabaseConfigured) return;
+  const payload = parseAuthCallbackUrl(url);
+  if (!payload) return;
+
+  if (payload.type === 'code') {
+    const { error } = await supabase.auth.exchangeCodeForSession(payload.code);
+    if (error) throw error;
+    return;
+  }
+
+  const { error } = await supabase.auth.setSession({
+    access_token: payload.access_token,
+    refresh_token: payload.refresh_token,
+  });
+  if (error) throw error;
+};
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,20 +45,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     let mounted = true;
-    supabase.auth.getSession().then(({ data }) => {
+
+    const applyUrl = async (url: string | null) => {
+      try {
+        await consumeAuthCallbackUrl(url);
+      } catch {
+        // 콜백 실패 시 기존 세션 유지. 로그인 화면에서 다시 시도.
+      }
+    };
+
+    const init = async () => {
+      const { data } = await supabase.auth.getSession();
       if (!mounted) return;
       setSession(data.session);
-      setLoading(false);
-    });
+      await applyUrl(await Linking.getInitialURL());
+      if (mounted) setLoading(false);
+    };
+
+    void init();
 
     const { data: subscription } = supabase.auth.onAuthStateChange((_event, next) => {
       setSession(next);
-      setLoading(false);
+    });
+    const urlSub = Linking.addEventListener('url', ({ url }) => {
+      void applyUrl(url);
     });
 
     return () => {
       mounted = false;
       subscription.subscription.unsubscribe();
+      urlSub.remove();
     };
   }, []);
 
@@ -55,7 +91,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const { error } = await supabase.auth.signInWithOtp({
           email: email.trim(),
           options: {
-            emailRedirectTo: 'tickerjournal://auth/callback',
+            emailRedirectTo: Linking.createURL('auth/callback'),
           },
         });
         if (error) throw error;
