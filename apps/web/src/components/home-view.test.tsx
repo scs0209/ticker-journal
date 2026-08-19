@@ -27,4 +27,10 @@ describe('HomeView', () => {
     expect(screen.getByText(/AAPL/)).toBeInTheDocument();
     expect(screen.getByText('you@example.com')).toBeInTheDocument();
   });
+
+  it('조회 실패를 빈 목록과 구분한다', () => {
+    render(<HomeView configured email='you@example.com' loadError />);
+    expect(screen.getByText(/관심종목을 불러오지 못했습니다/)).toBeInTheDocument();
+    expect(screen.queryByText(/아직 종목이 없습니다/)).not.toBeInTheDocument();
+  });
 });

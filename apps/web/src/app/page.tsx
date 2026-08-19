@@ -17,9 +17,12 @@ export default async function Home() {
   } = await supabase.auth.getUser();
 
   let tickers: Ticker[] = [];
+  let loadError = false;
   if (user) {
     const { data, error } = await supabase.from('tickers').select('*').order('created_at', { ascending: false });
-    if (!error && data) {
+    if (error) {
+      loadError = true;
+    } else if (data) {
       tickers = data.flatMap((row) => {
         const parsed = TickerSchema.safeParse(row);
         return parsed.success ? [parsed.data] : [];
@@ -27,5 +30,5 @@ export default async function Home() {
     }
   }
 
-  return <HomeView configured email={user?.email ?? null} tickers={tickers} />;
+  return <HomeView configured email={user?.email ?? null} tickers={tickers} loadError={loadError} />;
 }

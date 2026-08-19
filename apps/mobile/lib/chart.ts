@@ -23,7 +23,7 @@ export const buildChartHtml = (market: Market, symbol: string): string => {
 </html>`;
   }
 
-  const tvSymbol = escapeHtml(symbol.toUpperCase());
+  const tvSymbol = JSON.stringify(symbol.toUpperCase()).replaceAll('<', '\\u003c');
   return `<!DOCTYPE html>
 <html>
   <head>
@@ -38,7 +38,7 @@ export const buildChartHtml = (market: Market, symbol: string): string => {
     <script>
       new TradingView.widget({
         container_id: 'tv',
-        symbol: '${tvSymbol}',
+        symbol: ${tvSymbol},
         interval: 'D',
         timezone: 'Etc/UTC',
         theme: 'light',
