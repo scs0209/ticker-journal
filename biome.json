@@ -22,7 +22,7 @@
       "!**/public",
       "!**/public",
       "!**/.turbo",
-      "!**/.turbo"
+      "!**/next-env.d.ts"
     ]
   },
   "formatter": {

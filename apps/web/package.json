@@ -14,10 +14,12 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3",
+    "@ticker-journal/shared": "workspace:*",
     "next": "16.3.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "@ticker-journal/shared": "workspace:*"
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2",

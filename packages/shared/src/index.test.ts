@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CreateEntrySchema, CreateTickerSchema, TimelineFilterSchema } from './index';
 
 describe('CreateTickerSchema', () => {
-  it('uppercases and trims symbol', () => {
+  it('심볼을 대문자로 만들고 공백을 제거한다', () => {
     const parsed = CreateTickerSchema.parse({
       market: 'US',
       symbol: ' aapl ',
@@ -11,7 +11,7 @@ describe('CreateTickerSchema', () => {
     expect(parsed.symbol).toBe('AAPL');
   });
 
-  it('rejects empty symbol', () => {
+  it('빈 심볼을 거부한다', () => {
     expect(() => CreateTickerSchema.parse({ market: 'KR', symbol: '' })).toThrow();
   });
 });
@@ -19,7 +19,7 @@ describe('CreateTickerSchema', () => {
 describe('CreateEntrySchema', () => {
   const tickerId = '11111111-1111-1111-1111-111111111111';
 
-  it('accepts memo', () => {
+  it('memo 타입을 허용한다', () => {
     const parsed = CreateEntrySchema.parse({
       type: 'memo',
       ticker_id: tickerId,
@@ -28,7 +28,7 @@ describe('CreateEntrySchema', () => {
     expect(parsed.type).toBe('memo');
   });
 
-  it('accepts link with url', () => {
+  it('url이 있는 link를 허용한다', () => {
     const parsed = CreateEntrySchema.parse({
       type: 'link',
       ticker_id: tickerId,
@@ -38,7 +38,7 @@ describe('CreateEntrySchema', () => {
     expect(parsed.type).toBe('link');
   });
 
-  it('rejects link without url', () => {
+  it('url이 없는 link를 거부한다', () => {
     expect(() =>
       CreateEntrySchema.parse({
         type: 'link',
@@ -47,7 +47,7 @@ describe('CreateEntrySchema', () => {
     ).toThrow();
   });
 
-  it('accepts trade with side', () => {
+  it('side가 있는 trade를 허용한다', () => {
     const parsed = CreateEntrySchema.parse({
       type: 'trade',
       ticker_id: tickerId,
@@ -60,7 +60,7 @@ describe('CreateEntrySchema', () => {
 });
 
 describe('TimelineFilterSchema', () => {
-  it('allows all filter chips', () => {
+  it('필터 칩 옵션을 모두 허용한다', () => {
     expect(TimelineFilterSchema.options).toEqual(['all', 'memo', 'link', 'trade']);
   });
 });

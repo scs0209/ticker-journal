@@ -3,12 +3,13 @@ description: Ticker Journal 작업 시 이력서·포트폴리오 문서를 함�
 globs:
   - apps/**/*
   - packages/**/*
-alwaysApply: false
+  - supabase/**/*
+alwaysApply: true
 ---
 
 # Portfolio / Resume sync
 
-이 레포에서 의미 있는 기능·인프라 마일스톤을 끝낼 때마다 **코드만 끝내지 말고** 아래를 갱신한다.
+이 레포에서 의미 있는 기능·인프라 마일스톤을 끝낼 때마다 **코드만 끝내지 말고** 아래를 반드시 갱신한다. 사용자가 따로 부탁하지 않아도 마일스톤 완료 시 문서 업데이트를 포함한다.
 
 1. `docs/portfolio.md`
    - 과정(Process)에 무엇을 했는지
@@ -16,9 +17,10 @@ alwaysApply: false
    - 배운 점에 구체적 인사이트 1~3줄
    - 갱신 로그에 날짜 한 줄
 2. `docs/resume-bullets.md`
-   - `[예정]` 불릿을 실제 성과 문장으로 교체하거나 새 불릿 추가
+   - `[예정]`/`[ ]` 불릿을 실제 성과 문장으로 교체하거나 새 불릿 추가
    - 가능하면 수치·URL·스토어 링크 포함
+   - 테스트 건수·페이즈 체크박스 최신화
 
-마일스톤 예: Auth 연결, 첫 CRUD, WebView 차트 실연동, 웹 검색, EAS 빌드, 스토어 제출/승인.
+마일스톤 예: Auth 연결, 첫 CRUD, WebView 차트 실연동, 웹 검색, EAS 빌드, 스토어 제출/승인, Biome/TS 업그레이드.
 
 사용자가 “커밋해줘”라고 하면 문서 변경도 같은 커밋 또는 직전 `docs:` 커밋에 포함한다 (커밋 메시지 한국어).

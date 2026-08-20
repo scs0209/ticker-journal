@@ -6,20 +6,24 @@
     "dev": "turbo run dev",
     "dev:web": "pnpm --filter @ticker-journal/web dev",
     "dev:mobile": "pnpm --filter @ticker-journal/mobile start",
+    "dev:ios": "pnpm --filter @ticker-journal/mobile exec expo start --ios",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "test:e2e": "pnpm --filter @ticker-journal/web test:e2e",
+    "ci": "pnpm check && pnpm typecheck && pnpm test",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "lint:biome": "biome lint .",
     "lint:biome:fix": "biome lint --write .",
     "check": "biome check .",
-    "check:fix": "biome check --write ."
+    "check:fix": "biome check --write .",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.7",
+    "husky": "^9.1.7",
     "turbo": "^2.5.4",
     "typescript": "~7.0.2"
   }
