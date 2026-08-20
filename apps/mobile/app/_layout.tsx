@@ -34,6 +34,7 @@ export default function RootLayout() {
       <StatusBar style='dark' />
       <Stack>
         <Stack.Screen name='login' options={{ headerShown: false }} />
+        <Stack.Screen name='signup' options={{ headerShown: false }} />
         <Stack.Screen name='auth/callback' options={{ headerShown: false }} />
         <Stack.Screen
           name='index'

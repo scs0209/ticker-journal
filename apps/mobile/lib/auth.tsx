@@ -10,7 +10,10 @@ type AuthContextValue = {
   user: User | null;
   loading: boolean;
   configured: boolean;
+  signUp: (email: string, password: string) => Promise<void>;
+  signInWithPassword: (email: string, password: string) => Promise<void>;
   signInWithMagicLink: (email: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -84,15 +87,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       user: session?.user ?? null,
       loading,
       configured: isSupabaseConfigured,
-      signInWithMagicLink: async (email: string) => {
-        if (!isSupabaseConfigured) {
+      signUp: async (email: string, password: string) => {
+        if (!isSupabaseConfigured)
           throw new Error('EXPO_PUBLIC_SUPABASE_URL / EXPO_PUBLIC_SUPABASE_KEY 를 설정하세요.');
-        }
+        const { error } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: { emailRedirectTo: Linking.createURL('auth/callback') },
+        });
+        if (error) throw error;
+      },
+      signInWithPassword: async (email: string, password: string) => {
+        if (!isSupabaseConfigured)
+          throw new Error('EXPO_PUBLIC_SUPABASE_URL / EXPO_PUBLIC_SUPABASE_KEY 를 설정하세요.');
+        const { error } = await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password,
+        });
+        if (error) throw error;
+      },
+      signInWithMagicLink: async (email: string) => {
+        if (!isSupabaseConfigured)
+          throw new Error('EXPO_PUBLIC_SUPABASE_URL / EXPO_PUBLIC_SUPABASE_KEY 를 설정하세요.');
         const { error } = await supabase.auth.signInWithOtp({
           email: email.trim(),
           options: {
             emailRedirectTo: Linking.createURL('auth/callback'),
           },
+        });
+        if (error) throw error;
+      },
+      signInWithGoogle: async () => {
+        if (!isSupabaseConfigured)
+          throw new Error('EXPO_PUBLIC_SUPABASE_URL / EXPO_PUBLIC_SUPABASE_KEY 를 설정하세요.');
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: Linking.createURL('auth/callback') },
         });
         if (error) throw error;
       },
