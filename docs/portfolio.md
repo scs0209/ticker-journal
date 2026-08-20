@@ -238,7 +238,7 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 
 - 문제 정의·MVP 3화면 와이어프레임·아키텍처/ADR 문서화
 - pnpm/Turborepo 모노레포 (`mobile` / `web` / `shared`) + Biome + TypeScript 7
-- Expo Router · 매직링크 Auth · 관심종목/엔트리 CRUD · TradingView WebView
+- Expo Router · Auth(이메일/비번 + 매직링크 + Google OAuth) · 관심종목/엔트리 CRUD · TradingView WebView
 - Next.js `@supabase/ssr` 로그인·콜백·관심종목 조회
 - Postgres 스키마 + RLS, Zod 공유 스키마로 입력 검증
 - Vitest / RTL / Playwright / jest-expo 테스트 계층 + GitHub Actions CI
@@ -265,3 +265,4 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 | 2026-08-14 | office-hours 설계 문서를 `docs/design.md`로 레포에 포함 |
 | 2026-08-15 | Auth/CRUD 테스트 보강, GitHub Actions CI |
 | 2026-08-15 | CodeRabbit: 매직링크 콜백, 차트 JS 삽입, 세션 캐시 헤더, 조회 에러 상태 |
+| 2026-08-19 | 이메일/비번 회원가입·로그인 + Google OAuth 추가, 회원가입 화면(앱·웹) |

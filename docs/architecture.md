@@ -229,9 +229,11 @@ create index entries_user_created_idx on public.entries (user_id, created_at des
 
 ### Auth
 
-- Provider: **Supabase Email Magic Link** (비밀번호 없는 MVP).
+- Provider: **Supabase Auth** — 이메일/비밀번호 + 매직링크 + Google OAuth.
 - 모바일: `detectSessionInUrl: false` + `Linking` 콜백에서 `exchangeCodeForSession` / `setSession`. redirect는 `Linking.createURL('auth/callback')`.
 - 웹: `@supabase/ssr` 쿠키. 콜백·세션 갱신 응답에 no-cache 헤더를 붙인다.
+- 회원가입: 이메일/비밀번호 (확인 메일 발송). 매직링크는 기존 계정 로그인 전용.
+- Google OAuth: Supabase Dashboard에서 Google provider 활성화 필요.
 - 로그아웃·계정 삭제 경로는 Phase 2 스토어 심사 전에 필수 (빈 상태·에러와 함께).
 
 ### RLS (필수)
@@ -373,3 +375,4 @@ Phase 0 추가 권장:
 | 2026-08-13 | Phase 0 전 기준선 문서 초안 작성 |
 | 2026-08-15 | Auth/CRUD 테스트 보강, GitHub Actions CI 추가 |
 | 2026-08-15 | 모바일 매직링크 콜백·웹 세션 캐시 헤더 반영 |
+| 2026-08-19 | 이메일/비번 회원가입·로그인 + Google OAuth 추가 |
