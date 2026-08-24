@@ -8,6 +8,14 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'text-summary', 'json-summary', 'html'],
+      reportsDirectory: './coverage',
+      include: ['src/app/auth/callback/redirect.ts', 'src/components/home-view.tsx'],
+      exclude: ['src/**/*.test.*'],
+      all: true,
+    },
   },
   resolve: {
     dedupe: ['react', 'react-dom'],
