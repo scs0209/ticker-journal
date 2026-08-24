@@ -17,11 +17,12 @@ export default async function Home() {
   } = await supabase.auth.getUser();
 
   let tickers: Ticker[] = [];
-  let loadError = false;
+  let loadError: string | null = null;
   if (user) {
     const { data, error } = await supabase.from('tickers').select('*').order('created_at', { ascending: false });
     if (error) {
-      loadError = true;
+      console.error('tickers select failed:', error.message, error.code, error.details);
+      loadError = error.message;
     } else if (data) {
       tickers = data.flatMap((row) => {
         const parsed = TickerSchema.safeParse(row);

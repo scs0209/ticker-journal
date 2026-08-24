@@ -29,8 +29,9 @@ describe('HomeView', () => {
   });
 
   it('조회 실패를 빈 목록과 구분한다', () => {
-    render(<HomeView configured email='you@example.com' loadError />);
+    render(<HomeView configured email='you@example.com' loadError='permission denied for table tickers' />);
     expect(screen.getByText(/관심종목을 불러오지 못했습니다/)).toBeInTheDocument();
+    expect(screen.getByText(/permission denied for table tickers/)).toBeInTheDocument();
     expect(screen.queryByText(/아직 종목이 없습니다/)).not.toBeInTheDocument();
   });
 });

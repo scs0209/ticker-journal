@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { Suspense, useActionState } from 'react';
+import { Suspense, useActionState, useState } from 'react';
 
 import { createClient } from '@/lib/supabase/client';
 import { getSupabaseEnv } from '@/lib/supabase/env';
@@ -25,6 +25,7 @@ function LoginForm() {
   const { configured } = getSupabaseEnv();
   const searchParams = useSearchParams();
   const callbackError = searchParams.get('error') === 'auth' ? CALLBACK_ERROR : null;
+  const [oauthError, setOauthError] = useState<string | null>(null);
 
   const passwordAction = async (_prev: FormState, formData: FormData): Promise<FormState> => {
     const email = (formData.get('email') as string)?.trim();
@@ -66,12 +67,23 @@ function LoginForm() {
   const pending = pwPending || mlPending;
 
   const handleGoogle = async () => {
-    if (!configured) return;
-    const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
-    });
+    setOauthError(null);
+    if (!configured) {
+      setOauthError('NEXT_PUBLIC_SUPABASE_URL / ANON_KEY 가 비어 있습니다.');
+      return;
+    }
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: `${window.location.origin}/auth/callback` },
+      });
+      if (error) {
+        setOauthError(error.message);
+      }
+    } catch (err) {
+      setOauthError(err instanceof Error ? err.message : 'Google 로그인에 실패했습니다.');
+    }
   };
 
   return (
@@ -167,7 +179,9 @@ function LoginForm() {
           <p className='text-sm text-amber-700'>apps/web/.env 에 Supabase URL/KEY를 넣은 뒤 next dev를 재시작하세요.</p>
         ) : null}
         {state.message ? <p className='text-sm text-emerald-700'>{state.message}</p> : null}
-        {(state.error ?? callbackError) ? <p className='text-sm text-red-700'>{state.error ?? callbackError}</p> : null}
+        {(state.error ?? oauthError ?? callbackError) ? (
+          <p className='text-sm text-red-700'>{state.error ?? oauthError ?? callbackError}</p>
+        ) : null}
       </div>
     </main>
   );

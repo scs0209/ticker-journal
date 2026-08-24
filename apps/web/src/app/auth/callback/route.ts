@@ -1,16 +1,11 @@
 import { createServerClient } from '@supabase/ssr';
+import type { Database } from '@ticker-journal/shared';
 import { type NextRequest, NextResponse } from 'next/server';
 
+import { applyAuthCacheHeaders } from '@/lib/supabase/auth-cache-headers';
 import { getSupabaseEnv } from '@/lib/supabase/env';
 
 import { resolveAuthCallbackPath } from './redirect';
-
-const applyAuthCacheHeaders = (response: NextResponse) => {
-  response.headers.set('Cache-Control', 'private, no-cache, no-store, must-revalidate, max-age=0');
-  response.headers.set('Expires', '0');
-  response.headers.set('Pragma', 'no-cache');
-  return response;
-};
 
 export const GET = async (request: NextRequest) => {
   const { searchParams, origin } = request.nextUrl;
@@ -24,7 +19,7 @@ export const GET = async (request: NextRequest) => {
   if (code) {
     const { url, key, configured } = getSupabaseEnv();
     if (configured) {
-      const supabase = createServerClient(url, key, {
+      const supabase = createServerClient<Database>(url, key, {
         cookies: {
           getAll() {
             return request.cookies.getAll();

@@ -1,6 +1,8 @@
 const LOGIN_ERROR_PATH = '/login?error=auth';
 
-const isSafeNextPath = (next: string): boolean => next.startsWith('/') && !next.startsWith('//');
+/** 상대 경로만 허용. `//host`, `/\host` 등 open-redirect 패턴은 거부. */
+export const isSafeNextPath = (next: string): boolean =>
+  next.startsWith('/') && !next.startsWith('//') && !next.startsWith('/\\') && !next.includes('\\');
 
 export const resolveAuthCallbackPath = ({
   code,

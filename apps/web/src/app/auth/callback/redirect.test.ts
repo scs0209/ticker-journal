@@ -34,4 +34,24 @@ describe('resolveAuthCallbackPath', () => {
       }),
     ).toBe('/');
   });
+
+  it('프로토콜 상대 next(//)는 홈으로 보낸다', () => {
+    expect(
+      resolveAuthCallbackPath({
+        code: 'abc',
+        exchangeOk: true,
+        next: '//evil.example',
+      }),
+    ).toBe('/');
+  });
+
+  it('역슬래시 next(/\\)는 홈으로 보낸다', () => {
+    expect(
+      resolveAuthCallbackPath({
+        code: 'abc',
+        exchangeOk: true,
+        next: '/\\evil.example',
+      }),
+    ).toBe('/');
+  });
 });

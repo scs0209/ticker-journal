@@ -8,10 +8,10 @@ type HomeViewProps = {
   email?: string | null;
   tickers?: Ticker[];
   configured?: boolean;
-  loadError?: boolean;
+  loadError?: string | null;
 };
 
-export function HomeView({ email = null, tickers = [], configured = false, loadError = false }: HomeViewProps) {
+export function HomeView({ email = null, tickers = [], configured = false, loadError = null }: HomeViewProps) {
   return (
     <main className='min-h-screen bg-zinc-50 text-zinc-900'>
       <div className='mx-auto flex w-full max-w-3xl flex-col gap-6 px-6 py-16'>
@@ -56,9 +56,10 @@ export function HomeView({ email = null, tickers = [], configured = false, loadE
             </p>
             <h2 className='text-lg font-semibold'>관심종목</h2>
             {loadError ? (
-              <p className='rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800'>
-                관심종목을 불러오지 못했습니다. 잠시 후 다시 시도하세요.
-              </p>
+              <div className='rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800'>
+                <p>관심종목을 불러오지 못했습니다. 잠시 후 다시 시도하세요.</p>
+                <p className='mt-2 font-mono text-xs text-red-700'>{loadError}</p>
+              </div>
             ) : tickers.length === 0 ? (
               <p className='rounded-lg border border-dashed border-zinc-300 bg-white p-4 text-sm text-zinc-600'>
                 아직 종목이 없습니다. 모바일 앱에서 먼저 추가하세요.
