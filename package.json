@@ -13,6 +13,7 @@
     "test": "turbo run test",
     "test:e2e": "pnpm --filter @ticker-journal/web test:e2e",
     "ci": "pnpm check && pnpm typecheck && pnpm test",
+    "gen:types": "supabase gen types typescript --linked > packages/shared/src/database.ts",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "lint:biome": "biome lint .",

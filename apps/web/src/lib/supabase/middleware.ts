@@ -1,6 +1,8 @@
 import { createServerClient } from '@supabase/ssr';
+import type { Database } from '@ticker-journal/shared';
 import { type NextRequest, NextResponse } from 'next/server';
 
+import { applyAuthCacheHeaders } from './auth-cache-headers';
 import { getSupabaseEnv } from './env';
 
 export const updateSession = async (request: NextRequest) => {
@@ -15,7 +17,7 @@ export const updateSession = async (request: NextRequest) => {
     return supabaseResponse;
   }
 
-  const supabase = createServerClient(url, key, {
+  const supabase = createServerClient<Database>(url, key, {
     cookies: {
       getAll() {
         return request.cookies.getAll();
@@ -28,8 +30,11 @@ export const updateSession = async (request: NextRequest) => {
         for (const { name, value, options } of cookiesToSet) {
           supabaseResponse.cookies.set(name, value, options);
         }
-        for (const [key, value] of Object.entries(headers)) {
-          supabaseResponse.headers.set(key, value);
+        for (const [headerName, headerValue] of Object.entries(headers)) {
+          supabaseResponse.headers.set(headerName, headerValue);
+        }
+        if (cookiesToSet.length > 0) {
+          applyAuthCacheHeaders(supabaseResponse);
         }
       },
     },

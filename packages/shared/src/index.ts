@@ -97,3 +97,5 @@ export const TimelineFilterSchema = z.enum(['all', 'memo', 'link', 'trade']);
 export type TimelineFilter = z.infer<typeof TimelineFilterSchema>;
 
 export const APP_NAME = 'Ticker Journal';
+
+export type { Database, EntryInsert, EntryRow, TickerInsert, TickerRow } from './database-exports';

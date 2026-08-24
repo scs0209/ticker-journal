@@ -1,6 +1,7 @@
 import 'react-native-url-polyfill/auto';
 
 import { createClient } from '@supabase/supabase-js';
+import type { Database } from '@ticker-journal/shared';
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 
@@ -32,11 +33,15 @@ const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_KEY ?? process.env.EXPO_PUB
 
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseKey);
 
-export const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseKey || 'placeholder', {
-  auth: {
-    storage: ExpoSecureStoreAdapter,
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false,
+export const supabase = createClient<Database>(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseKey || 'placeholder',
+  {
+    auth: {
+      storage: ExpoSecureStoreAdapter,
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
+    },
   },
-});
+);

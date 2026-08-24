@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr';
+import type { Database } from '@ticker-journal/shared';
 import { cookies } from 'next/headers';
 
 import { getSupabaseEnv } from './env';
@@ -7,7 +8,7 @@ export const createClient = async () => {
   const cookieStore = await cookies();
   const { url, key } = getSupabaseEnv();
 
-  return createServerClient(url || 'https://placeholder.supabase.co', key || 'placeholder', {
+  return createServerClient<Database>(url || 'https://placeholder.supabase.co', key || 'placeholder', {
     cookies: {
       getAll() {
         return cookieStore.getAll();
