@@ -52,4 +52,5 @@ pnpm run ci            # Biome + typecheck + unit (pre-commit 훅과 동일)
 | web | `redirect.ts`, `HomeView` | ~81% |
 | mobile | `lib/chart.ts` | ~100% |
 
-로컬: Husky `pre-commit`이 `pnpm run ci`를 실행한다. Playwright E2E는 브라우저 설치 때문에 커밋 훅에 넣지 않고 GitHub Actions만 돌린다.
+로컬: Husky `pre-commit`은 `pnpm run ci`만 실행한다 (`check` + `typecheck` + `test`).  
+GitHub Actions는 여기에 **`test:coverage` · `check:db-types`(local Supabase) · Playwright E2E**를 더 돌린다. 커밋이 통과해도 CI가 더 넓은 게이트다.

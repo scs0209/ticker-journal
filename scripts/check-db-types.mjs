@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 /**
  * packages/shared/src/database.ts 가 `pnpm gen:types` 결과와 같은지 검사한다.
- * 수동 편집 드리프트를 CI에서 잡는다.
+ *
+ * 소스:
+ * - linked (기본, 로컬): `supabase gen types --linked`
+ * - local: `supabase start` 후 `--local` (CI 권장, 토큰 불필요)
+ * - project: `--project-id` + SUPABASE_ACCESS_TOKEN
  */
 import { execFileSync } from 'node:child_process';
 import { readFileSync, unlinkSync, writeFileSync } from 'node:fs';
@@ -12,9 +16,10 @@ const root = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
 const committedPath = resolve(root, 'packages/shared/src/database.ts');
 const generatedPath = resolve(root, 'packages/shared/src/database.generated.ts');
 
-// Linked project ref (public). Override with SUPABASE_PROJECT_ID when needed.
 // biome-ignore lint/suspicious/noUndeclaredEnvVars: root script, not a turbo task
 const projectId = process.env.SUPABASE_PROJECT_ID ?? 'bfzalnslexpnoohaqbgs';
+// biome-ignore lint/suspicious/noUndeclaredEnvVars: root script, not a turbo task
+const source = process.env.DB_TYPES_SOURCE ?? (process.env.CI ? 'local' : 'linked');
 
 const normalize = (src) => {
   const body = src
@@ -24,9 +29,22 @@ const normalize = (src) => {
   return `${body}\n`;
 };
 
-const genArgs = process.env.CI
-  ? ['supabase', 'gen', 'types', 'typescript', '--project-id', projectId, '--schema', 'public']
-  : ['supabase', 'gen', 'types', 'typescript', '--linked', '--schema', 'public'];
+const genArgs = (() => {
+  if (source === 'local') {
+    return ['supabase', 'gen', 'types', 'typescript', '--local', '--schema', 'public'];
+  }
+  if (source === 'project') {
+    return ['supabase', 'gen', 'types', 'typescript', '--project-id', projectId, '--schema', 'public'];
+  }
+  return ['supabase', 'gen', 'types', 'typescript', '--linked', '--schema', 'public'];
+})();
+
+// biome-ignore lint/suspicious/noUndeclaredEnvVars: optional CI secret
+const accessToken = process.env.SUPABASE_ACCESS_TOKEN;
+if (source === 'project' && !accessToken) {
+  console.warn('check:db-types: SUPABASE_ACCESS_TOKEN 없음 — project 소스 검사를 스킵합니다.');
+  process.exit(0);
+}
 
 const generated = execFileSync('npx', genArgs, {
   cwd: root,
@@ -53,4 +71,4 @@ if (committed !== fresh) {
   process.exit(1);
 }
 
-console.log('Database 타입이 스키마와 일치합니다.');
+console.log(`Database 타입이 스키마와 일치합니다. (source=${source})`);
