@@ -270,3 +270,5 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 | 2026-08-15 | CodeRabbit: 매직링크 콜백, 차트 JS 삽입, 세션 캐시 헤더, 조회 에러 상태 |
 | 2026-08-19 | 이메일/비번 회원가입·로그인 + Google OAuth 추가, 회원가입 화면(앱·웹) |
 | 2026-08-20 | CodeRabbit: open-redirect·세션 캐시·entries UPDATE 소유권·Google WebBrowser |
+| 2026-08-24 | CodeRabbit 잔여: 로그아웃 Alert, trigger search_path, WebView originWhitelist, 모달 초기화 |
+| 2026-08-24 | `pnpm gen:types`로 Database 재생성·Relationships 반영, CI `check:db-types` |

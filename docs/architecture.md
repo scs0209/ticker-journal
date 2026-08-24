@@ -134,7 +134,7 @@ Phase 0 동안 웹은 **스키마·디자인 계약만 맞춤**. 필수는 아�
 ## 5. 도메인 모델
 
 - 소스 오브 트루스: `packages/shared/src/index.ts`.
-- Supabase `Database` 타입: `packages/shared/src/database.ts` (웹·모바일 공용). 스키마 변경 후 `pnpm gen:types`로 재생성.
+- Supabase `Database` 타입: `packages/shared/src/database.ts` (웹·모바일 공용). 스키마 변경 후 `pnpm gen:types`로 재생성. CI는 `pnpm check:db-types`로 드리프트 검사.
 
 ### 5.1 ER
 

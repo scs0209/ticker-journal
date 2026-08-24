@@ -67,7 +67,7 @@ pnpm typecheck
 ### Phase 0 로컬 설정
 
 1. [Supabase](https://supabase.com) 프로젝트 생성
-2. SQL Editor 또는 CLI로 `supabase/migrations/20260813100000_init.sql` 적용
+2. SQL Editor 또는 `supabase db push`로 `supabase/migrations`의 모든 마이그레이션을 순서대로 적용
 3. Auth → URL Configuration에 추가:
    - `tickerjournal://auth/callback` (모바일 개발 빌드/스토어)
    - Expo Go라면 앱이 찍는 `exp://…/--/auth/callback` 도 등록
