@@ -35,8 +35,21 @@
 
 ```bash
 pnpm test              # 단위 + 컴포넌트
+pnpm test:coverage     # 단위·컴포넌트 커버리지(정량 %)
 pnpm test:e2e          # Playwright (web)
 pnpm run ci            # Biome + typecheck + unit (pre-commit 훅과 동일)
 ```
+
+### 커버리지(정량)
+
+`pnpm test:coverage`로 **라인/브랜치 %**를 본다. HTML은 각 패키지 `coverage/index.html`.
+
+측정 범위는 `docs/testing.md` 허용 대상(단위·컴포넌트)이다. 화면·Auth·라우팅은 E2E/Maestro 영역이라 여기 %에 넣지 않는다. **%를 올리려고 목킹 테스트를 추가하지 않는다.**
+
+| 패키지 | 포함 파일 | Lines (참고) |
+|--------|-----------|--------------|
+| shared | `src/index.ts` (스키마) | ~100% |
+| web | `redirect.ts`, `HomeView` | ~81% |
+| mobile | `lib/chart.ts` | ~100% |
 
 로컬: Husky `pre-commit`이 `pnpm run ci`를 실행한다. Playwright E2E는 브라우저 설치 때문에 커밋 훅에 넣지 않고 GitHub Actions만 돌린다.

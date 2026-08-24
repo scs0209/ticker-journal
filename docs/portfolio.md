@@ -272,3 +272,4 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 | 2026-08-20 | CodeRabbit: open-redirect·세션 캐시·entries UPDATE 소유권·Google WebBrowser |
 | 2026-08-24 | CodeRabbit 잔여: 로그아웃 Alert, trigger search_path, WebView originWhitelist, 모달 초기화 |
 | 2026-08-24 | `pnpm gen:types`로 Database 재생성·Relationships 반영, CI `check:db-types` |
+| 2026-08-24 | `pnpm test:coverage`로 단위·컴포넌트 Lines % 측정 (shared/mobile 100%, web ~81%) |
