@@ -29,6 +29,7 @@ export default function LoginScreen() {
   const { session, configured, signInWithPassword, signInWithMagicLink, signInWithGoogle } = useAuth();
   const [mode, setMode] = useState<AuthMode>('password');
   const [result, setResult] = useState<{ message?: string; error?: string }>({});
+  const [oauthPending, setOauthPending] = useState(false);
 
   const {
     control,
@@ -40,6 +41,8 @@ export default function LoginScreen() {
   });
 
   if (session) return <Redirect href='/' />;
+
+  const busy = isSubmitting || oauthPending;
 
   const onSubmit = handleSubmit(async (data) => {
     setResult({});
@@ -60,11 +63,15 @@ export default function LoginScreen() {
   });
 
   const handleGoogle = async () => {
+    if (busy) return;
     setResult({});
+    setOauthPending(true);
     try {
       await signInWithGoogle();
     } catch (err) {
       setResult({ error: err instanceof Error ? err.message : 'Google 로그인에 실패했습니다.' });
+    } finally {
+      setOauthPending(false);
     }
   };
 
@@ -146,10 +153,10 @@ export default function LoginScreen() {
 
       <Pressable
         onPress={onSubmit}
-        disabled={!configured || isSubmitting}
+        disabled={!configured || busy}
         accessibilityRole='button'
         accessibilityLabel={mode === 'password' ? '로그인' : '매직링크 보내기'}
-        style={[styles.button, (!configured || isSubmitting) && styles.buttonDisabled]}
+        style={[styles.button, (!configured || busy) && styles.buttonDisabled]}
       >
         {isSubmitting ? (
           <ActivityIndicator color='#fff' />
@@ -172,12 +179,16 @@ export default function LoginScreen() {
 
       <Pressable
         onPress={handleGoogle}
-        disabled={!configured || isSubmitting}
+        disabled={!configured || busy}
         accessibilityRole='button'
         accessibilityLabel='Google로 로그인'
-        style={[styles.googleButton, (!configured || isSubmitting) && styles.buttonDisabled]}
+        style={[styles.googleButton, (!configured || busy) && styles.buttonDisabled]}
       >
-        <Text style={styles.googleButtonText}>Google로 계속하기</Text>
+        {oauthPending ? (
+          <ActivityIndicator color='#333' />
+        ) : (
+          <Text style={styles.googleButtonText}>Google로 계속하기</Text>
+        )}
       </Pressable>
 
       {result.message && <Text style={styles.message}>{result.message}</Text>}

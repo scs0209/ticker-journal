@@ -83,6 +83,17 @@ export default function TickerDetailScreen() {
     return <Redirect href='/login' />;
   }
 
+  const closeModal = () => {
+    setModalOpen(false);
+    setEntryType('memo');
+    setBody('');
+    setUrl('');
+    setTitle('');
+    setNote('');
+    setSide('buy');
+    setReason('');
+  };
+
   const handleCreate = async () => {
     if (!tickerId) return;
     setSaving(true);
@@ -108,12 +119,7 @@ export default function TickerDetailScreen() {
         });
       }
       await createEntry(input);
-      setModalOpen(false);
-      setBody('');
-      setUrl('');
-      setTitle('');
-      setNote('');
-      setReason('');
+      closeModal();
       await load();
     } catch (err) {
       Alert.alert('저장 실패', err instanceof Error ? err.message : '엔트리를 저장하지 못했습니다.');
@@ -146,7 +152,7 @@ export default function TickerDetailScreen() {
     <View style={styles.container}>
       {ticker ? (
         <View style={styles.chart}>
-          <WebView originWhitelist={['*']} source={{ html: chartHtml }} style={styles.webview} />
+          <WebView originWhitelist={['https://*', 'about:blank']} source={{ html: chartHtml }} style={styles.webview} />
         </View>
       ) : null}
 
@@ -171,7 +177,7 @@ export default function TickerDetailScreen() {
         data={entries}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ paddingHorizontal: 12, gap: 8, paddingBottom: 100 }}
-        ListEmptyComponent={!loading ? <Text style={styles.empty}>타임라인이 비어 있습니다.</Text> : null}
+        ListEmptyComponent={!loading && !error ? <Text style={styles.empty}>타임라인이 비어 있습니다.</Text> : null}
         renderItem={({ item }) => (
           <Pressable
             style={styles.timelineItem}
@@ -195,7 +201,7 @@ export default function TickerDetailScreen() {
         <Text style={styles.fabText}>+</Text>
       </Pressable>
 
-      <Modal visible={modalOpen} animationType='slide' transparent onRequestClose={() => setModalOpen(false)}>
+      <Modal visible={modalOpen} animationType='slide' transparent onRequestClose={closeModal}>
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>엔트리 추가</Text>
@@ -261,7 +267,7 @@ export default function TickerDetailScreen() {
             ) : null}
 
             <View style={styles.modalActions}>
-              <Pressable onPress={() => setModalOpen(false)} style={styles.secondaryButton}>
+              <Pressable onPress={closeModal} style={styles.secondaryButton}>
                 <Text>취소</Text>
               </Pressable>
               <Pressable

@@ -1,6 +1,6 @@
 import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Pressable, Text } from 'react-native';
+import { Alert, Pressable, Text } from 'react-native';
 
 import { AuthProvider, useAuth } from '../lib/auth';
 
@@ -15,8 +15,8 @@ const LogoutButton = () => {
         try {
           await signOut();
           router.replace('/login');
-        } catch {
-          // 세션이 남아 있으면 로그인 화면으로 보내지 않는다.
+        } catch (err) {
+          Alert.alert('로그아웃 실패', err instanceof Error ? err.message : '다시 시도해 주세요.');
         }
       }}
       accessibilityRole='button'

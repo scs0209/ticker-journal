@@ -153,7 +153,7 @@ export default function WatchlistScreen() {
       {list.loading ? <ActivityIndicator style={{ marginTop: 24 }} /> : null}
       {list.error ? <Text style={styles.error}>{list.error}</Text> : null}
 
-      {!list.loading && list.tickers.length === 0 ? (
+      {!list.loading && !list.error && list.tickers.length === 0 ? (
         <Text style={styles.empty}>아직 종목이 없습니다. 추가 버튼으로 첫 종목을 만드세요.</Text>
       ) : null}
 
