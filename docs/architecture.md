@@ -133,7 +133,8 @@ Phase 0 동안 웹은 **스키마·디자인 계약만 맞춤**. 필수는 아�
 
 ## 5. 도메인 모델
 
-소스 오브 트루스: `packages/shared/src/index.ts`.
+- 소스 오브 트루스: `packages/shared/src/index.ts`.
+- Supabase `Database` 타입: `packages/shared/src/database.ts` (웹·모바일 공용). 스키마 변경 후 `pnpm gen:types`로 재생성.
 
 ### 5.1 ER
 
@@ -230,8 +231,8 @@ create index entries_user_created_idx on public.entries (user_id, created_at des
 ### Auth
 
 - Provider: **Supabase Auth** — 이메일/비밀번호 + 매직링크 + Google OAuth.
-- 모바일: `detectSessionInUrl: false` + `Linking` 콜백에서 `exchangeCodeForSession` / `setSession`. redirect는 `Linking.createURL('auth/callback')`.
-- 웹: `@supabase/ssr` 쿠키. 콜백·세션 갱신 응답에 no-cache 헤더를 붙인다.
+- 모바일: `detectSessionInUrl: false` + `Linking` 콜백에서 `exchangeCodeForSession` / `setSession`. redirect는 `Linking.createURL('auth/callback')`. Google은 `skipBrowserRedirect` + `WebBrowser.openAuthSessionAsync`.
+- 웹: `@supabase/ssr` 쿠키. 콜백·세션 갱신(쿠키 set) 응답에 no-cache 헤더를 붙인다. `next` 쿼리는 상대 경로만 허용(`//`, `/\` 차단).
 - 회원가입: 이메일/비밀번호 (확인 메일 발송). 매직링크는 기존 계정 로그인 전용.
 - Google OAuth: Supabase Dashboard에서 Google provider 활성화 필요.
 - 로그아웃·계정 삭제 경로는 Phase 2 스토어 심사 전에 필수 (빈 상태·에러와 함께).
@@ -241,7 +242,7 @@ create index entries_user_created_idx on public.entries (user_id, created_at des
 ```text
 tickers:  SELECT/INSERT/UPDATE/DELETE  WHERE user_id = auth.uid()
 entries:  SELECT/INSERT/UPDATE/DELETE  WHERE user_id = auth.uid()
-entries INSERT: ticker_id 가 본인 tickers 행이어야 함 (존재 + user_id 일치)
+entries INSERT/UPDATE: ticker_id 가 본인 tickers 행이어야 함 (존재 + user_id 일치)
 ```
 
 서비스 롤 키는 **앱에 넣지 않는다**. anon key + RLS만.
@@ -376,3 +377,4 @@ Phase 0 추가 권장:
 | 2026-08-15 | Auth/CRUD 테스트 보강, GitHub Actions CI 추가 |
 | 2026-08-15 | 모바일 매직링크 콜백·웹 세션 캐시 헤더 반영 |
 | 2026-08-19 | 이메일/비번 회원가입·로그인 + Google OAuth 추가 |
+| 2026-08-20 | 콜백 open-redirect·세션 캐시 헤더·entries UPDATE ticker 소유권·모바일 Google WebBrowser |

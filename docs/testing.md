@@ -10,11 +10,14 @@
 
 ## 레이어
 
+현재 **4계층**이다. (모바일 화면 Maestro E2E는 예정이라 아직 세지 않는다.)
+
 | 레이어 | 대상 | 도구 | 하지 않는 것 |
 |--------|------|------|----------------|
-| 단위 | Zod, `buildChartHtml`, `resolveAuthCallbackPath` | Vitest / Jest | supabase/OTP를 목킹하고 `toHaveBeenCalled` |
-| 컴포넌트 | 웹 순수 뷰만 (`HomeView` props → 텍스트) | RTL | 라우터/Auth를 목킹한 화면 테스트 |
-| E2E | 웹 사용자 플로우: 홈, 로그인 페이지 | Playwright | 매직링크 메일·실세션 (인박스 없음). 모바일은 Maestro 전까지 E2E 없음 |
+| shared 단위 | Zod 스키마 정규화/거부 | Vitest | supabase/OTP를 목킹하고 `toHaveBeenCalled` |
+| mobile 단위 | `buildChartHtml` | jest-expo | expo-router/Auth를 목킹한 화면 테스트 |
+| 웹 컴포넌트 | 웹 순수 뷰만 (`HomeView` props → 텍스트) | RTL | 라우터/Auth를 목킹한 화면 테스트 |
+| 웹 E2E | 웹 사용자 플로우: 홈, 로그인 페이지 | Playwright | 매직링크 메일·실세션 (인박스 없음) |
 
 웹 페이지 플로우 = Playwright. 웹 RTL은 **props → 텍스트**인 순수 뷰만 (예: 로그인된 `HomeView` 종목). 라우팅·폼 제출·Auth는 E2E.
 
@@ -22,8 +25,8 @@
 
 - `packages/shared` — 스키마 정규화/거부
 - `apps/mobile/lib/chart.ts` — US 위젯 / KR fallback HTML
+- `apps/web` `resolveAuthCallbackPath` — 콜백 성공/실패 경로 (웹 단위)
 - `apps/web` `HomeView` — 로그인된 종목 표시, 조회 실패 메시지 (E2E에 세션 없음)
-- `resolveAuthCallbackPath` — 콜백 성공/실패 경로
 - Playwright — `/`, `/login`이 뜨는지
 
 모바일 화면(관심종목·상세)은 라우터 없이 마운트되지 않는다. 구현 mock으로 목록을 그리는 테스트는 하지 않고, Maestro E2E에서 다룬다.

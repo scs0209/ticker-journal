@@ -9,7 +9,7 @@
 
 ## 지금 당장 쓸 수 있는 수치 (Phase 0 기준)
 
-- 웹·모바일 **2앱** + 공유 패키지 **1개** 모노레포로 도메인 스키마를 한곳(`packages/shared`)에 두고, 단위·컴포넌트·E2E **4계층** 테스트 + **GitHub Actions CI** (`check` / `typecheck` / `test` / Playwright)
+- 웹·모바일 **2앱** + 공유 패키지 **1개** 모노레포로 도메인 스키마를 한곳(`packages/shared`)에 두고, 테스트 **4계층**(shared 단위 · mobile 단위 · 웹 컴포넌트 · 웹 E2E) + **GitHub Actions CI** (`check` / `typecheck` / `test` / Playwright)
 - 관심종목 → 종목 상세(WebView) → 웹 아카이브까지 **핵심 루프 3화면**으로 MVP 고정, 브로커 SaaS 범위는 제외
 - Supabase **Auth(이메일/비번 + 매직링크 + Google OAuth) + RLS**로 앱·웹 **동일 계정** 경로 확보: 모바일 CRUD(관심종목·memo/link/trade) + 웹 관심종목 조회
 - 차트는 TradingView WebView(US) / KR fallback으로 분리해 네이티브 차트 공수를 제외하고 Phase 0 일정 유지
@@ -28,7 +28,7 @@
 | 본인 실사용 | 관심종목 **≥10**, 주간 entry **≥20** | “본인 워크플로로 종목 N개·주간 기록 M건 운영” | 마이그레이션 적용 후 채움 |
 | 입력 속도 | 노션 대비 기록 시간 **X%↓** 또는 **N초** | “모바일 입력으로 스크랩·매매 이유 기록 평균 Ns” | 미측정 |
 | 검색 회수 | 웹에서 과거 메모 찾기 **성공률** / 시간 | “웹 검색으로 과거 리서치 회수 시간 Y분→Z분” | Phase 1 |
-| 품질 | 테스트 **N건**, CI 통과, 크래시 **0** | “단위·E2E N건·스토어 심사용 경로 충족” | GitHub Actions CI + 로컬 green |
+| 품질 | 테스트 **N건**, CI 통과, 크래시 **0** | “단위·E2E N건·스토어 심사용 경로 충족” | 테스트 **22건**(단위·컴포넌트 19 + E2E 3), GitHub Actions CI 통과, 로컬 green |
 | 범위 통제 | 제외한 기능 **K개**, 출시까지 **D주** | “브로커 연동 등 K개 제외, D주 내 스토어 제출” | 브로커·AI 브리핑 제외 |
 
 ---

@@ -57,7 +57,7 @@ flowchart TB
   end
 
   subgraph backend [Backend]
-    SB[(Supabase<br/>Auth magic link<br/>Postgres + RLS)]
+    SB[(Supabase<br/>Auth: email/password · magic link · Google OAuth<br/>Postgres + RLS)]
   end
 
   M --> Z
@@ -113,21 +113,24 @@ gantt
 
 ### 0.6 테스트 계층
 
+현재 **4계층** (모바일 화면 Maestro는 예정).
+
 ```mermaid
 flowchart TB
   E2E[Playwright · 웹 E2E]
   COMP[RTL · 웹 순수 뷰]
-  UNIT[Vitest · Zod · 차트 HTML · 콜백 경로]
+  MUNIT[jest-expo · buildChartHtml]
+  SUNIT[Vitest · shared Zod]
 
-  E2E --> COMP --> UNIT
+  E2E --> COMP --> MUNIT --> SUNIT
 ```
 
 | 영역 | 도구 | 역할 |
 |------|------|------|
 | shared | Vitest | 스키마·도메인 규칙 |
-| web | Vitest + RTL | 로그인된 HomeView 종목 표시 |
-| web | Playwright | `/`, `/login` |
 | mobile | jest-expo | `buildChartHtml` (화면은 Maestro 예정) |
+| web | Vitest + RTL | 로그인된 HomeView 종목 표시 · 콜백 경로 |
+| web | Playwright | `/`, `/login` |
 
 ---
 
@@ -204,7 +207,7 @@ flowchart TB
 | 성공 조건 | 내부 배포만으론 이력서 신호 약함 | 양 스토어를 Success Criteria로 |
 | 모노레포 | 앱별 lock/workspace 충돌 | 루트 workspace만 유지 |
 | 테스트 | React 19.2.3 vs react-dom 19.2.8 → RTL 빈 DOM | overrides로 정렬 (`pnpm-workspace.yaml`) |
-| RN 테스트 | Vitest 통일 유혹 | mobile만 jest-expo + RNTL |
+| RN 테스트 | Vitest 통일 유혹 | mobile만 jest-expo (`buildChartHtml`); 화면은 Maestro 예정 |
 | Phase 0 | Supabase 없이 앱만 만들면 E2E 검증 불가 | 마이그레이션·RLS·env를 코드와 같이 고정 |
 | Next 16 | `middleware` deprecation | `proxy.ts`로 세션 갱신 이전 |
 | Auth | 모바일/웹 redirect URL이 다름 | `tickerjournal://…` + Expo Go `exp://…` + `localhost:3000/auth/callback` 등록 |
@@ -266,3 +269,4 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 | 2026-08-15 | Auth/CRUD 테스트 보강, GitHub Actions CI |
 | 2026-08-15 | CodeRabbit: 매직링크 콜백, 차트 JS 삽입, 세션 캐시 헤더, 조회 에러 상태 |
 | 2026-08-19 | 이메일/비번 회원가입·로그인 + Google OAuth 추가, 회원가입 화면(앱·웹) |
+| 2026-08-20 | CodeRabbit: open-redirect·세션 캐시·entries UPDATE 소유권·Google WebBrowser |
