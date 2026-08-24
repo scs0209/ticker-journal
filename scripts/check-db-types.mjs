@@ -24,6 +24,11 @@ const source = process.env.DB_TYPES_SOURCE ?? (process.env.CI ? 'local' : 'linke
 const normalize = (src) => {
   const body = src
     .replace(/\r\n/g, '\n')
+    // remote gen만 붙는 메타 — local/remote 비교에서 제외
+    .replace(
+      /\n\s*\/\/ Allows to automatically instantiate createClient with right options\n\s*\/\/ instead of createClient<Database, \{ PostgrestVersion: 'XX' \}>\(URL, KEY\)\n\s*__InternalSupabase: \{\n\s*PostgrestVersion: "[^"]+"\n\s*\}\n/,
+      '\n',
+    )
     .replace(/PostgrestVersion:\s*"[^"]+"/g, 'PostgrestVersion: "NORMALIZED"')
     .trimEnd();
   return `${body}\n`;
