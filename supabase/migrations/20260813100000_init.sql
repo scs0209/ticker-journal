@@ -95,8 +95,22 @@ create policy "entries_insert_own"
 create policy "entries_update_own"
   on public.entries for update
   using (user_id = auth.uid())
-  with check (user_id = auth.uid());
+  with check (
+    user_id = auth.uid()
+    and exists (
+      select 1
+      from public.tickers t
+      where t.id = ticker_id
+        and t.user_id = auth.uid()
+    )
+  );
 
 create policy "entries_delete_own"
   on public.entries for delete
   using (user_id = auth.uid());
+
+grant usage on schema public to anon, authenticated;
+grant select, insert, update, delete on table public.tickers to authenticated;
+grant select, insert, update, delete on table public.entries to authenticated;
+grant select on table public.tickers to anon;
+grant select on table public.entries to anon;
