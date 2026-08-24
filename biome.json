@@ -23,7 +23,8 @@
       "!**/public",
       "!**/.turbo",
       "!**/next-env.d.ts",
-      "!**/supabase/.temp"
+      "!**/supabase/.temp",
+      "!**/packages/shared/src/database.ts"
     ]
   },
   "formatter": {

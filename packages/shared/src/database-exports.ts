@@ -1,3 +1,4 @@
+/** `Database`는 `pnpm gen:types`로 재생성한다. 수동 편집하지 말 것. */
 import type { Database } from './database';
 
 export type { Database };

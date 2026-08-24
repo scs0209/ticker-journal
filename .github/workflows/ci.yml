@@ -28,6 +28,10 @@ jobs:
       - run: pnpm check
       - run: pnpm typecheck
       - run: pnpm test
+      - name: Check Database types match schema
+        env:
+          SUPABASE_PROJECT_ID: bfzalnslexpnoohaqbgs
+        run: pnpm check:db-types
 
   e2e:
     runs-on: ubuntu-latest
