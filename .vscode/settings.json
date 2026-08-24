@@ -3,5 +3,12 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit"
   },
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "files.associations": {
+    "**/supabase/**/*.sql": "plaintext"
+  },
+  "mssql.intelliSense.enableIntelliSense": false,
+  "mssql.intelliSense.enableErrorChecking": false,
+  "mssql.intelliSense.enableSuggestions": false,
+  "mssql.intelliSense.enableQuickInfo": false
 }

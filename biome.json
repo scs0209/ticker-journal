@@ -22,7 +22,9 @@
       "!**/public",
       "!**/public",
       "!**/.turbo",
-      "!**/next-env.d.ts"
+      "!**/next-env.d.ts",
+      "!**/supabase/.temp",
+      "!**/supabase/.temp/**"
     ]
   },
   "formatter": {
