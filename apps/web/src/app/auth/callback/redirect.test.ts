@@ -54,4 +54,16 @@ describe('resolveAuthCallbackPath', () => {
       }),
     ).toBe('/');
   });
+
+  it('개행이 포함된 next(/\\n/…)는 홈으로 보낸다', () => {
+    const path = resolveAuthCallbackPath({
+      code: 'abc',
+      exchangeOk: true,
+      next: '/\n/evil.example',
+    });
+    expect(path).toBe('/');
+    const url = new URL(path, 'https://app.example');
+    expect(url.origin).toBe('https://app.example');
+    expect(url.pathname).toBe('/');
+  });
 });
