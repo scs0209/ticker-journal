@@ -4,17 +4,15 @@ import {
   type CreateTickerInput,
   CreateTickerSchema,
   type Entry,
+  type EntryInsert,
+  type EntryRow,
   EntrySchema,
   type Ticker,
   TickerSchema,
   type TimelineFilter,
 } from '@ticker-journal/shared';
-import type { z } from 'zod';
 
 import { supabase } from './supabase';
-
-const EntryRowSchema = EntrySchema;
-type EntryRow = z.infer<typeof EntryRowSchema>;
 
 export const listTickers = async (): Promise<Ticker[]> => {
   const { data, error } = await supabase.from('tickers').select('*').order('created_at', { ascending: false });
@@ -64,7 +62,7 @@ export const listEntries = async (tickerId: string, filter: TimelineFilter = 'al
   }
   const { data, error } = await query;
   if (error) throw error;
-  return (data ?? []).map((row) => EntryRowSchema.parse(normalizeEntryRow(row)));
+  return (data ?? []).map((row) => EntrySchema.parse(normalizeEntryRow(row)));
 };
 
 export const createEntry = async (input: CreateEntryInput): Promise<Entry> => {
@@ -77,13 +75,9 @@ export const createEntry = async (input: CreateEntryInput): Promise<Entry> => {
   if (!user) throw new Error('로그인이 필요합니다.');
 
   const payload = toInsertPayload(parsed, user.id);
-  const { data, error } = await supabase
-    .from('entries')
-    .insert(payload as Record<string, unknown>)
-    .select('*')
-    .single();
+  const { data, error } = await supabase.from('entries').insert(payload).select('*').single();
   if (error) throw error;
-  return EntryRowSchema.parse(normalizeEntryRow(data as Record<string, unknown>));
+  return EntrySchema.parse(normalizeEntryRow(data));
 };
 
 export const deleteEntry = async (id: string): Promise<void> => {
@@ -91,20 +85,20 @@ export const deleteEntry = async (id: string): Promise<void> => {
   if (error) throw error;
 };
 
-const toInsertPayload = (parsed: CreateEntryInput, userId: string) => {
-  const base = {
+const toInsertPayload = (parsed: CreateEntryInput, userId: string): EntryInsert => {
+  const base: EntryInsert = {
     user_id: userId,
     ticker_id: parsed.ticker_id,
     type: parsed.type,
-    body: null as string | null,
-    url: null as string | null,
-    title: null as string | null,
-    note: null as string | null,
-    side: null as 'buy' | 'sell' | null,
-    traded_at: null as string | null,
-    price: null as number | null,
-    qty: null as number | null,
-    reason: null as string | null,
+    body: null,
+    url: null,
+    title: null,
+    note: null,
+    side: null,
+    traded_at: null,
+    price: null,
+    qty: null,
+    reason: null,
   };
 
   if (parsed.type === 'memo') {
@@ -128,43 +122,45 @@ const toInsertPayload = (parsed: CreateEntryInput, userId: string) => {
   };
 };
 
-const normalizeEntryRow = (row: Record<string, unknown>): EntryRow => {
-  const type = row.type;
-  if (type === 'memo') {
+const normalizeEntryRow = (row: EntryRow): Entry => {
+  if (row.type === 'memo') {
     return {
-      id: String(row.id),
-      user_id: String(row.user_id),
-      ticker_id: String(row.ticker_id),
-      created_at: String(row.created_at),
-      updated_at: String(row.updated_at),
+      id: row.id,
+      user_id: row.user_id,
+      ticker_id: row.ticker_id,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
       type: 'memo',
-      body: String(row.body ?? ''),
+      body: row.body ?? '',
     };
   }
-  if (type === 'link') {
+  if (row.type === 'link') {
     return {
-      id: String(row.id),
-      user_id: String(row.user_id),
-      ticker_id: String(row.ticker_id),
-      created_at: String(row.created_at),
-      updated_at: String(row.updated_at),
+      id: row.id,
+      user_id: row.user_id,
+      ticker_id: row.ticker_id,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
       type: 'link',
-      url: String(row.url ?? ''),
-      title: (row.title as string | null) ?? null,
-      note: (row.note as string | null) ?? null,
+      url: row.url ?? '',
+      title: row.title,
+      note: row.note,
     };
+  }
+  if (row.type !== 'trade') {
+    throw new Error(`알 수 없는 엔트리 타입: ${String(row.type)}`);
   }
   return {
-    id: String(row.id),
-    user_id: String(row.user_id),
-    ticker_id: String(row.ticker_id),
-    created_at: String(row.created_at),
-    updated_at: String(row.updated_at),
+    id: row.id,
+    user_id: row.user_id,
+    ticker_id: row.ticker_id,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
     type: 'trade',
     side: row.side === 'sell' ? 'sell' : 'buy',
-    traded_at: String(row.traded_at ?? ''),
-    price: row.price == null ? null : Number(row.price),
-    qty: row.qty == null ? null : Number(row.qty),
-    reason: (row.reason as string | null) ?? null,
+    traded_at: row.traded_at ?? '',
+    price: row.price,
+    qty: row.qty,
+    reason: row.reason,
   };
 };

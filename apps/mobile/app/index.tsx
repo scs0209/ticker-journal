@@ -1,33 +1,76 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { CreateTickerSchema, type Market, type Ticker } from '@ticker-journal/shared';
 import { Link, Redirect, useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useReducer, useRef, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { z } from 'zod';
 
 import { createTicker, deleteTicker, listTickers } from '../lib/api';
 import { useAuth } from '../lib/auth';
 
 const MARKETS: Market[] = ['US', 'KR'];
 
+const formSchema = z.object({
+  market: z.enum(['US', 'KR']),
+  symbol: z.string().min(1, '심볼을 입력해 주세요.'),
+  name: z.string().optional(),
+});
+type FormValues = z.infer<typeof formSchema>;
+
+type ListState = { tickers: Ticker[]; loading: boolean; error: string | null };
+type ListAction =
+  | { type: 'LOAD_START' }
+  | { type: 'LOAD_OK'; tickers: Ticker[] }
+  | { type: 'LOAD_FAIL'; error: string };
+
+const listInitial: ListState = { tickers: [], loading: true, error: null };
+
+const listReducer = (state: ListState, action: ListAction): ListState => {
+  switch (action.type) {
+    case 'LOAD_START':
+      return { ...state, loading: true, error: null };
+    case 'LOAD_OK':
+      return { tickers: action.tickers, loading: false, error: null };
+    case 'LOAD_FAIL':
+      return { ...state, loading: false, error: action.error };
+    default:
+      return state;
+  }
+};
+
 export default function WatchlistScreen() {
   const { session, loading: authLoading } = useAuth();
-  const [tickers, setTickers] = useState<Ticker[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [list, dispatch] = useReducer(listReducer, listInitial);
   const [modalOpen, setModalOpen] = useState(false);
-  const [market, setMarket] = useState<Market>('US');
-  const [symbol, setSymbol] = useState('');
-  const [name, setName] = useState('');
-  const [saving, setSaving] = useState(false);
+  const loadGen = useRef(0);
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { isSubmitting, errors },
+  } = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { market: 'US', symbol: '', name: '' },
+  });
+
+  const symbol = watch('symbol');
 
   const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+    const gen = ++loadGen.current;
+    dispatch({ type: 'LOAD_START' });
     try {
-      setTickers(await listTickers());
+      const next = await listTickers();
+      if (gen !== loadGen.current) return;
+      dispatch({ type: 'LOAD_OK', tickers: next });
     } catch (err) {
-      setError(err instanceof Error ? err.message : '목록을 불러오지 못했습니다.');
-    } finally {
-      setLoading(false);
+      if (gen !== loadGen.current) return;
+      dispatch({
+        type: 'LOAD_FAIL',
+        error: err instanceof Error ? err.message : '목록을 불러오지 못했습니다.',
+      });
     }
   }, []);
 
@@ -35,6 +78,9 @@ export default function WatchlistScreen() {
     useCallback(() => {
       if (!session) return;
       void load();
+      return () => {
+        loadGen.current += 1;
+      };
     }, [load, session]),
   );
 
@@ -50,25 +96,25 @@ export default function WatchlistScreen() {
     return <Redirect href='/login' />;
   }
 
-  const handleCreate = async () => {
-    setSaving(true);
+  const closeModal = () => {
+    setModalOpen(false);
+    reset({ market: 'US', symbol: '', name: '' });
+  };
+
+  const onCreate = handleSubmit(async (data) => {
     try {
       const parsed = CreateTickerSchema.parse({
-        market,
-        symbol,
-        name: name.trim() ? name.trim() : null,
+        market: data.market,
+        symbol: data.symbol,
+        name: data.name?.trim() ? data.name.trim() : null,
       });
       await createTicker(parsed);
-      setModalOpen(false);
-      setSymbol('');
-      setName('');
+      closeModal();
       await load();
     } catch (err) {
       Alert.alert('추가 실패', err instanceof Error ? err.message : '종목을 추가하지 못했습니다.');
-    } finally {
-      setSaving(false);
     }
-  };
+  });
 
   const handleDelete = (item: Ticker) => {
     Alert.alert('종목 삭제', `${item.symbol} 을(를) 삭제할까요?`, [
@@ -104,15 +150,15 @@ export default function WatchlistScreen() {
         </Pressable>
       </View>
 
-      {loading ? <ActivityIndicator style={{ marginTop: 24 }} /> : null}
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+      {list.loading ? <ActivityIndicator style={{ marginTop: 24 }} /> : null}
+      {list.error ? <Text style={styles.error}>{list.error}</Text> : null}
 
-      {!loading && tickers.length === 0 ? (
+      {!list.loading && list.tickers.length === 0 ? (
         <Text style={styles.empty}>아직 종목이 없습니다. 추가 버튼으로 첫 종목을 만드세요.</Text>
       ) : null}
 
       <FlatList
-        data={tickers}
+        data={list.tickers}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ gap: 10, paddingBottom: 40 }}
         renderItem={({ item }) => (
@@ -133,48 +179,69 @@ export default function WatchlistScreen() {
         )}
       />
 
-      <Modal visible={modalOpen} animationType='slide' transparent>
+      <Modal visible={modalOpen} animationType='slide' transparent onRequestClose={closeModal}>
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>종목 추가</Text>
-            <View style={styles.marketRow}>
-              {MARKETS.map((m) => (
-                <Pressable
-                  key={m}
-                  onPress={() => setMarket(m)}
-                  style={[styles.chip, market === m && styles.chipActive]}
-                  accessibilityRole='button'
-                  accessibilityLabel={`시장 ${m}`}
-                >
-                  <Text style={[styles.chipText, market === m && styles.chipTextActive]}>{m}</Text>
-                </Pressable>
-              ))}
-            </View>
-            <TextInput
-              placeholder='심볼 (예: AAPL, 005930)'
-              autoCapitalize='characters'
-              value={symbol}
-              onChangeText={setSymbol}
-              style={styles.input}
-              accessibilityLabel='심볼'
+            <Controller
+              control={control}
+              name='market'
+              render={({ field: { onChange, value } }) => (
+                <View style={styles.marketRow}>
+                  {MARKETS.map((m) => (
+                    <Pressable
+                      key={m}
+                      onPress={() => onChange(m)}
+                      style={[styles.chip, value === m && styles.chipActive]}
+                      accessibilityRole='button'
+                      accessibilityLabel={`시장 ${m}`}
+                    >
+                      <Text style={[styles.chipText, value === m && styles.chipTextActive]}>{m}</Text>
+                    </Pressable>
+                  ))}
+                </View>
+              )}
             />
-            <TextInput
-              placeholder='이름 (선택)'
-              value={name}
-              onChangeText={setName}
-              style={styles.input}
-              accessibilityLabel='종목 이름'
+            <Controller
+              control={control}
+              name='symbol'
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  placeholder='심볼 (예: AAPL, 005930)'
+                  autoCapitalize='characters'
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  style={styles.input}
+                  accessibilityLabel='심볼'
+                />
+              )}
+            />
+            {errors.symbol ? <Text style={styles.fieldError}>{errors.symbol.message}</Text> : null}
+            <Controller
+              control={control}
+              name='name'
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  placeholder='이름 (선택)'
+                  value={value ?? ''}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  style={styles.input}
+                  accessibilityLabel='종목 이름'
+                />
+              )}
             />
             <View style={styles.modalActions}>
-              <Pressable onPress={() => setModalOpen(false)} style={styles.secondaryButton}>
+              <Pressable onPress={closeModal} style={styles.secondaryButton}>
                 <Text>취소</Text>
               </Pressable>
               <Pressable
-                onPress={handleCreate}
-                disabled={saving || !symbol.trim()}
-                style={[styles.primaryButton, (saving || !symbol.trim()) && styles.disabled]}
+                onPress={onCreate}
+                disabled={isSubmitting || !symbol.trim()}
+                style={[styles.primaryButton, (isSubmitting || !symbol.trim()) && styles.disabled]}
               >
-                {saving ? <ActivityIndicator color='#fff' /> : <Text style={styles.primaryButtonText}>저장</Text>}
+                {isSubmitting ? <ActivityIndicator color='#fff' /> : <Text style={styles.primaryButtonText}>저장</Text>}
               </Pressable>
             </View>
           </View>
@@ -191,6 +258,7 @@ const styles = StyleSheet.create({
   addButton: { backgroundColor: '#111', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 8 },
   addButtonText: { color: '#fff', fontWeight: '600' },
   error: { color: '#b91c1c' },
+  fieldError: { color: '#b91c1c', fontSize: 12, marginTop: -4 },
   empty: { color: '#666', fontSize: 14, lineHeight: 20 },
   center: { alignItems: 'center', justifyContent: 'center' },
   card: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 14, gap: 4 },

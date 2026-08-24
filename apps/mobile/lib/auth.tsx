@@ -1,9 +1,12 @@
 import type { Session, User } from '@supabase/supabase-js';
 import * as Linking from 'expo-linking';
+import * as WebBrowser from 'expo-web-browser';
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
 import { parseAuthCallbackUrl } from './auth-callback';
 import { isSupabaseConfigured, supabase } from './supabase';
+
+WebBrowser.maybeCompleteAuthSession();
 
 type AuthContextValue = {
   session: Session | null;
@@ -120,11 +123,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       signInWithGoogle: async () => {
         if (!isSupabaseConfigured)
           throw new Error('EXPO_PUBLIC_SUPABASE_URL / EXPO_PUBLIC_SUPABASE_KEY 를 설정하세요.');
-        const { error } = await supabase.auth.signInWithOAuth({
+        const redirectTo = Linking.createURL('auth/callback');
+        const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
-          options: { redirectTo: Linking.createURL('auth/callback') },
+          options: {
+            redirectTo,
+            skipBrowserRedirect: true,
+          },
         });
         if (error) throw error;
+        if (!data.url) throw new Error('Google 로그인 URL을 받지 못했습니다.');
+
+        const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
+        if (result.type === 'success') {
+          await consumeAuthCallbackUrl(result.url);
+        }
       },
       signOut: async () => {
         const { error } = await supabase.auth.signOut();

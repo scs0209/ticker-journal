@@ -7,7 +7,7 @@ import {
   TimelineFilterSchema,
 } from '@ticker-journal/shared';
 import { Redirect, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
@@ -36,6 +36,7 @@ export default function TickerDetailScreen() {
   const [side, setSide] = useState<'buy' | 'sell'>('buy');
   const [reason, setReason] = useState('');
   const [saving, setSaving] = useState(false);
+  const loadGen = useRef(0);
 
   const chartHtml = useMemo(() => {
     if (!ticker) return '';
@@ -44,16 +45,19 @@ export default function TickerDetailScreen() {
 
   const load = useCallback(async () => {
     if (!tickerId) return;
+    const gen = ++loadGen.current;
     setLoading(true);
     setError(null);
     try {
       const [nextTicker, nextEntries] = await Promise.all([getTicker(tickerId), listEntries(tickerId, filter)]);
+      if (gen !== loadGen.current) return;
       setTicker(nextTicker);
       setEntries(nextEntries);
     } catch (err) {
+      if (gen !== loadGen.current) return;
       setError(err instanceof Error ? err.message : '상세를 불러오지 못했습니다.');
     } finally {
-      setLoading(false);
+      if (gen === loadGen.current) setLoading(false);
     }
   }, [filter, tickerId]);
 
@@ -61,6 +65,9 @@ export default function TickerDetailScreen() {
     useCallback(() => {
       if (!session) return;
       void load();
+      return () => {
+        loadGen.current += 1;
+      };
     }, [load, session]),
   );
 
@@ -188,7 +195,7 @@ export default function TickerDetailScreen() {
         <Text style={styles.fabText}>+</Text>
       </Pressable>
 
-      <Modal visible={modalOpen} animationType='slide' transparent>
+      <Modal visible={modalOpen} animationType='slide' transparent onRequestClose={() => setModalOpen(false)}>
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>엔트리 추가</Text>
