@@ -40,7 +40,12 @@ export const createTicker = async (input: CreateTickerInput): Promise<Ticker> =>
     .select('*')
     .single();
 
-  if (error) throw error;
+  if (error) {
+    if (error.code === '23505') {
+      throw new Error(`이미 추가된 종목입니다. (${parsed.market} ${parsed.symbol})`);
+    }
+    throw error;
+  }
   return TickerSchema.parse(data);
 };
 

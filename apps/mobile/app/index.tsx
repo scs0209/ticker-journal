@@ -112,7 +112,9 @@ export default function WatchlistScreen() {
       closeModal();
       await load();
     } catch (err) {
-      Alert.alert('추가 실패', err instanceof Error ? err.message : '종목을 추가하지 못했습니다.');
+      const message = err instanceof Error ? err.message : '종목을 추가하지 못했습니다.';
+      const isDuplicate = message.startsWith('이미 추가된 종목');
+      Alert.alert(isDuplicate ? '동일 종목' : '추가 실패', message);
     }
   });
 
