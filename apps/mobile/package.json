@@ -3,18 +3,25 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
+    "@hookform/resolvers": "^5.9.1",
+    "@supabase/supabase-js": "^2.112.3",
     "@ticker-journal/shared": "workspace:*",
     "expo": "~57.0.12",
     "expo-constants": "~57.0.10",
     "expo-linking": "~57.0.5",
     "expo-router": "~57.0.12",
+    "expo-secure-store": "^57.0.1",
     "expo-status-bar": "~57.0.1",
+    "expo-web-browser": "~57.0.2",
     "react": "19.2.3",
+    "react-hook-form": "^7.85.0",
     "react-native": "0.86.2",
     "react-native-gesture-handler": "~2.32.0",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.2",
-    "react-native-webview": "13.16.1"
+    "react-native-url-polyfill": "^4.0.0",
+    "react-native-webview": "13.16.1",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@testing-library/react-native": "^13.2.0",
@@ -32,7 +39,8 @@
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
     "lint": "biome lint .",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "private": true
 }

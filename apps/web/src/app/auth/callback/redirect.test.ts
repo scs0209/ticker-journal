@@ -1,0 +1,69 @@
+import { describe, expect, it } from 'vitest';
+
+import { resolveAuthCallbackPath } from './redirect';
+
+describe('resolveAuthCallbackPath', () => {
+  it('교환에 성공하면 next 경로로 보낸다', () => {
+    expect(
+      resolveAuthCallbackPath({
+        code: 'abc',
+        exchangeOk: true,
+        next: '/tickers',
+      }),
+    ).toBe('/tickers');
+  });
+
+  it('next가 없으면 홈으로 보낸다', () => {
+    expect(resolveAuthCallbackPath({ code: 'abc', exchangeOk: true })).toBe('/');
+  });
+
+  it('코드가 없으면 로그인 에러로 보낸다', () => {
+    expect(resolveAuthCallbackPath({ code: null, exchangeOk: false })).toBe('/login?error=auth');
+  });
+
+  it('교환에 실패하면 로그인 에러로 보낸다', () => {
+    expect(resolveAuthCallbackPath({ code: 'abc', exchangeOk: false })).toBe('/login?error=auth');
+  });
+
+  it('외부 URL next는 홈으로 보낸다', () => {
+    expect(
+      resolveAuthCallbackPath({
+        code: 'abc',
+        exchangeOk: true,
+        next: 'https://evil.example',
+      }),
+    ).toBe('/');
+  });
+
+  it('프로토콜 상대 next(//)는 홈으로 보낸다', () => {
+    expect(
+      resolveAuthCallbackPath({
+        code: 'abc',
+        exchangeOk: true,
+        next: '//evil.example',
+      }),
+    ).toBe('/');
+  });
+
+  it('역슬래시 next(/\\)는 홈으로 보낸다', () => {
+    expect(
+      resolveAuthCallbackPath({
+        code: 'abc',
+        exchangeOk: true,
+        next: '/\\evil.example',
+      }),
+    ).toBe('/');
+  });
+
+  it('개행이 포함된 next(/\\n/…)는 홈으로 보낸다', () => {
+    const path = resolveAuthCallbackPath({
+      code: 'abc',
+      exchangeOk: true,
+      next: '/\n/evil.example',
+    });
+    expect(path).toBe('/');
+    const url = new URL(path, 'https://app.example');
+    expect(url.origin).toBe('https://app.example');
+    expect(url.pathname).toBe('/');
+  });
+});

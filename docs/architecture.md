@@ -133,7 +133,8 @@ Phase 0 동안 웹은 **스키마·디자인 계약만 맞춤**. 필수는 아�
 
 ## 5. 도메인 모델
 
-소스 오브 트루스: `packages/shared/src/index.ts`.
+- 소스 오브 트루스: `packages/shared/src/index.ts`.
+- Supabase `Database` 타입: `packages/shared/src/database.ts` (웹·모바일 공용). 스키마 변경 후 `pnpm gen:types`로 재생성. CI는 `pnpm check:db-types`로 드리프트 검사.
 
 ### 5.1 ER
 
@@ -229,8 +230,11 @@ create index entries_user_created_idx on public.entries (user_id, created_at des
 
 ### Auth
 
-- Provider: **Supabase Email Magic Link** (비밀번호 없는 MVP).
-- 세션: `@supabase/supabase-js` + Expo SecureStore(또는 공식 Expo 헬퍼) / 웹은 쿠키 또는 local 세션 (Phase 1에서 확정).
+- Provider: **Supabase Auth** — 이메일/비밀번호 + 매직링크 + Google OAuth.
+- 모바일: `detectSessionInUrl: false` + `Linking` 콜백에서 `exchangeCodeForSession` / `setSession`. redirect는 `Linking.createURL('auth/callback')`. Google은 `skipBrowserRedirect` + `WebBrowser.openAuthSessionAsync`.
+- 웹: `@supabase/ssr` 쿠키. 콜백·세션 갱신(쿠키 set) 응답에 no-cache 헤더를 붙인다. `next` 쿼리는 상대 경로만 허용(`//`, `/\` 차단).
+- 회원가입: 이메일/비밀번호 (확인 메일 발송). 매직링크는 기존 계정 로그인 전용.
+- Google OAuth: Supabase Dashboard에서 Google provider 활성화 필요.
 - 로그아웃·계정 삭제 경로는 Phase 2 스토어 심사 전에 필수 (빈 상태·에러와 함께).
 
 ### RLS (필수)
@@ -238,7 +242,7 @@ create index entries_user_created_idx on public.entries (user_id, created_at des
 ```text
 tickers:  SELECT/INSERT/UPDATE/DELETE  WHERE user_id = auth.uid()
 entries:  SELECT/INSERT/UPDATE/DELETE  WHERE user_id = auth.uid()
-entries INSERT: ticker_id 가 본인 tickers 행이어야 함 (존재 + user_id 일치)
+entries INSERT/UPDATE: ticker_id 가 본인 tickers 행이어야 함 (존재 + user_id 일치)
 ```
 
 서비스 롤 키는 **앱에 넣지 않는다**. anon key + RLS만.
@@ -248,7 +252,7 @@ entries INSERT: ticker_id 가 본인 tickers 행이어야 함 (존재 + user_id 
 | 변수 | 사용처 |
 |------|--------|
 | `EXPO_PUBLIC_SUPABASE_URL` | mobile |
-| `EXPO_PUBLIC_SUPABASE_ANON_KEY` | mobile |
+| `EXPO_PUBLIC_SUPABASE_KEY` | mobile (publishable / anon) |
 | `NEXT_PUBLIC_SUPABASE_URL` | web |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | web |
 
@@ -294,12 +298,13 @@ sequenceDiagram
 | 도메인 | `packages/shared` | Vitest |
 | 웹 컴포넌트 | `apps/web` | Vitest + RTL |
 | 웹 E2E | `apps/web/e2e` | Playwright |
-| 모바일 화면 | `apps/mobile` | jest-expo + RNTL |
+| 모바일 단위 | `apps/mobile` | jest-expo (`buildChartHtml`) |
+| 모바일 화면 | (예정) Maestro | E2E |
 
 Phase 0 추가 권장:
 
 - shared: Create* / payload check 케이스 보강
-- mobile: 로그인 게이트·CRUD 성공/실패 화면 테스트 (모킹)
+- 모바일 화면: Maestro 스모크 (라우터 mock 컴포넌트 테스트는 하지 않음)
 - (나중) Maestro/Detox 스토어 전 스모크
 
 ---
@@ -352,14 +357,15 @@ Phase 0 추가 권장:
 
 구현 시작 전/중 이 목록을 닫는다.
 
-- [ ] Supabase 프로젝트 생성, `.env` 채움 (example 기준)
-- [ ] `supabase/migrations` 에 tickers/entries + RLS
-- [ ] mobile `lib/supabase.ts` + Auth 화면/세션 게이트
-- [ ] 관심종목 CRUD (placeholder 제거)
-- [ ] 엔트리 CRUD + 필터 칩 동작
-- [ ] US TradingView WebView / KR fallback
-- [ ] shared·mobile 테스트 갱신
-- [ ] `docs/portfolio.md` · `docs/resume-bullets.md` 갱신
+- [x] Supabase 프로젝트 생성, `.env` 채움 (example 기준) — **로컬 키는 사용자 환경**
+- [x] `supabase/migrations` 에 tickers/entries + RLS
+- [x] mobile `lib/supabase.ts` + Auth 화면/세션 게이트
+- [x] 관심종목 CRUD (placeholder 제거)
+- [x] 엔트리 CRUD + 필터 칩 동작
+- [x] US TradingView WebView / KR fallback
+- [x] shared·mobile 테스트 갱신
+- [x] `docs/portfolio.md` · `docs/resume-bullets.md` 갱신
+- [x] GitHub Actions CI (`check` / `typecheck` / `test` / Playwright E2E)
 
 ---
 
@@ -368,3 +374,7 @@ Phase 0 추가 권장:
 | 날짜 | 내용 |
 |------|------|
 | 2026-08-13 | Phase 0 전 기준선 문서 초안 작성 |
+| 2026-08-15 | Auth/CRUD 테스트 보강, GitHub Actions CI 추가 |
+| 2026-08-15 | 모바일 매직링크 콜백·웹 세션 캐시 헤더 반영 |
+| 2026-08-19 | 이메일/비번 회원가입·로그인 + Google OAuth 추가 |
+| 2026-08-20 | 콜백 open-redirect·세션 캐시 헤더·entries UPDATE ticker 소유권·모바일 Google WebBrowser |

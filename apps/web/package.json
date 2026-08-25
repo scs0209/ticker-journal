@@ -10,14 +10,18 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "analyze": "ANALYZE=true next build --webpack"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3",
+    "@ticker-journal/shared": "workspace:*",
     "next": "16.3.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "@ticker-journal/shared": "workspace:*"
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2",
@@ -29,7 +33,9 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^4.7.0",
+    "@vitest/coverage-v8": "^3.2.7",
     "jsdom": "^26.1.0",
+    "sonda": "0.14.0",
     "tailwindcss": "^4",
     "typescript": "~7.0.2",
     "vitest": "^3.2.4"

@@ -22,7 +22,11 @@
       "!**/public",
       "!**/public",
       "!**/.turbo",
-      "!**/.turbo"
+      "!**/next-env.d.ts",
+      "!**/supabase/.temp",
+      "!**/packages/shared/src/database.ts",
+      "!**/.sonda",
+      "!**/apps/web/.sonda"
     ]
   },
   "formatter": {
