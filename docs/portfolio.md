@@ -101,8 +101,7 @@ gantt
   section Done
   Scaffold + tests + Biome/TS7 :done, s0, 2026-08-11, 3d
   Auth + CRUD 구현 (앱·웹 세션) :done, p0, 2026-08-13, 3d
-  section Phase 0 remaining
-  실계정 매직링크 E2E 검증 :active, p0e, 2026-08-15, 2d
+  실계정·웹앱 동일 목록 스모크 :done, p0e, 2026-08-15, 2d
   section Phase 1
   Web search + detail        :p1, after p0e, 7d
   section Phase 2
@@ -191,7 +190,7 @@ flowchart TB
 ### 1.8 이후 로드맵
 
 - [x] Phase 0 구현: Supabase Auth + 모바일 CRUD + 웹 세션/목록 (`feat/phase-0-auth-crud`)
-- [ ] Phase 0 실계정: 매직링크 로그인 후 웹·앱 동일 목록 E2E 검증
+- [x] Phase 0 실계정 스모크: 앱에서 종목·entry 생성 후 웹에서 동일 관심종목 목록 확인
 - [ ] Phase 1: 웹 entries 검색·종목 상세
 - [ ] Phase 2: EAS → App Store / Play Store
 - [ ] v1.1 공유 시트 / v2 AI 브리핑
@@ -273,3 +272,5 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 | 2026-08-24 | CodeRabbit 잔여: 로그아웃 Alert, trigger search_path, WebView originWhitelist, 모달 초기화 |
 | 2026-08-24 | `pnpm gen:types`로 Database 재생성·Relationships 반영, CI `check:db-types` |
 | 2026-08-24 | `pnpm test:coverage`로 단위·컴포넌트 Lines % 측정 (shared/mobile 100%, web ~81%) |
+| 2026-08-25 | 중복 종목 Alert 문구, Sonda 번들 분석 스크립트 |
+| 2026-08-25 | Phase 0 실계정 스모크 완료로 마감 |

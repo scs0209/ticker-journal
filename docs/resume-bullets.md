@@ -28,7 +28,7 @@
 | 본인 실사용 | 관심종목 **≥10**, 주간 entry **≥20** | “본인 워크플로로 종목 N개·주간 기록 M건 운영” | 마이그레이션 적용 후 채움 |
 | 입력 속도 | 노션 대비 기록 시간 **X%↓** 또는 **N초** | “모바일 입력으로 스크랩·매매 이유 기록 평균 Ns” | 미측정 |
 | 검색 회수 | 웹에서 과거 메모 찾기 **성공률** / 시간 | “웹 검색으로 과거 리서치 회수 시간 Y분→Z분” | Phase 1 |
-| 품질 | 테스트 **N건**, CI 통과, 크래시 **0** | “단위·E2E N건·스토어 심사용 경로 충족” | 테스트 **20+3건**, 단위 커버리지 Lines shared/mobile **100%** · web **~81%** (`pnpm test:coverage`), GitHub Actions CI 통과 |
+| 품질 | 테스트 **N건**, CI 통과, 크래시 **0** | “단위·E2E N건·스토어 심사용 경로 충족” | 테스트 **20+3건**, Lines shared/mobile **100%** · web **~81%**, GitHub Actions CI 통과, Phase 0 실계정 스모크 완료 |
 | 범위 통제 | 제외한 기능 **K개**, 출시까지 **D주** | “브로커 연동 등 K개 제외, D주 내 스토어 제출” | 브로커·AI 브리핑 제외 |
 
 ---
@@ -46,12 +46,12 @@
 
 ## Phase별 불릿 템플릿 (숫자 채우기)
 
-### Phase 0 (Auth·CRUD·웹 세션) — 작성 가능
+### Phase 0 (Auth·CRUD·웹 세션) — 완료
 
-- `[x]` Expo·Next **동일 Supabase 프로젝트**에 매직링크 Auth를 붙이고, Postgres `tickers`/`entries` + RLS로 모바일 CRUD·웹 관심종목 조회까지 연결
+- `[x]` Expo·Next **동일 Supabase 프로젝트**에 Auth(이메일/비번·매직링크·Google)를 붙이고, Postgres `tickers`/`entries` + RLS로 모바일 CRUD·웹 관심종목 조회까지 연결
 - `[x]` 관심종목·엔트리(memo/link/trade) 입력 경로를 Zod 공유 스키마로 검증하고, US TradingView WebView / KR fallback으로 차트 표면을 분리
-- `[x]` 모노레포 테스트 **4계층** + GitHub Actions(`check`/`typecheck`/`test`/E2E) + Biome + TypeScript 7으로 품질 게이트 유지
-- `[ ]` 본인 계정으로 관심종목 **__**개, entry **__**건 생성 후 웹에서 동일 목록 end-to-end 검증 (SQL 적용·실로그인 후 채움)
+- `[x]` 모노레포 테스트 **4계층** + 커버리지(`pnpm test:coverage`) + GitHub Actions(`check`/`typecheck`/`test`/E2E) + Biome + TypeScript 7으로 품질 게이트 유지
+- `[x]` 본인 계정으로 관심종목 **3**개·entry 입력 후 웹에서 **동일 관심종목 목록** 수동 스모크 완료
 
 ### Phase 1 (웹 검색·상세)
 
