@@ -24,7 +24,9 @@
       "!**/.turbo",
       "!**/next-env.d.ts",
       "!**/supabase/.temp",
-      "!**/packages/shared/src/database.ts"
+      "!**/packages/shared/src/database.ts",
+      "!**/.sonda",
+      "!**/apps/web/.sonda"
     ]
   },
   "formatter": {

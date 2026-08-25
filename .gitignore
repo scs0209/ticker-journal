@@ -22,3 +22,5 @@ test-results
 blob-report
 .gstack/
 supabase/.temp/
+.sonda/
+apps/web/.sonda/
