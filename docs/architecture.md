@@ -120,14 +120,13 @@ shared는 `main`/`types`가 `dist/`를 가리키므로 **앱 실행 전 `pnpm --
 
 ### 4.2 Web (`apps/web`) — Phase 1
 
-| 화면 | Phase |
-|------|-------|
-| 랜딩 / 아카이브 안내 | 스캐폴드 (현재) |
-| 매직링크 로그인 | Phase 1 (앱과 동일 Supabase 프로젝트) |
+| 화면 | 상태 |
+|------|------|
+| 홈(관심종목 목록) · 로그인/회원가입 · 콜백 | Phase 0 완료 |
 | entries 검색 (`q`, page size 20) | Phase 1 |
-| 종목 상세 + TradingView | Phase 1 |
+| 종목 상세 + TradingView (타임라인 조회 · 엔트리 CRUD) | Phase 1 |
 
-Phase 0 동안 웹은 **스키마·디자인 계약만 맞춤**. 필수는 아님.
+검색 범위 (`docs/design.md`): `entries.body|note|reason|title|url` 및 ticker `symbol`/`name`에 ILIKE. 결과 = entry 리스트 → 종목 상세 링크.
 
 ---
 
@@ -378,3 +377,4 @@ Phase 0 추가 권장:
 | 2026-08-15 | 모바일 매직링크 콜백·웹 세션 캐시 헤더 반영 |
 | 2026-08-19 | 이메일/비번 회원가입·로그인 + Google OAuth 추가 |
 | 2026-08-20 | 콜백 open-redirect·세션 캐시 헤더·entries UPDATE ticker 소유권·모바일 Google WebBrowser |
+| 2026-08-25 | Phase 0 머지 후 Phase 1(웹 검색·상세) 착수 준비 — Auth는 Phase 0에서 완료로 표기 |

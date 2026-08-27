@@ -274,3 +274,4 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 | 2026-08-24 | `pnpm test:coverage`로 단위·컴포넌트 Lines % 측정 (shared/mobile 100%, web ~81%) |
 | 2026-08-25 | 중복 종목 Alert 문구, Sonda 번들 분석 스크립트 |
 | 2026-08-25 | Phase 0 실계정 스모크 완료로 마감 |
+| 2026-08-27 | `main` 최신화 후 `feat/phase-1-web-search-detail` 착수 |
