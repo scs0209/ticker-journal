@@ -49,11 +49,12 @@ export const createEntry = async (_prev: EntryActionState, formData: FormData): 
       });
       await createEntryRecord(supabase, user.id, input);
     }
-    revalidatePath(`/ticker/${tickerId}`);
-    redirect(`/ticker/${tickerId}`);
   } catch (err) {
     return { error: err instanceof Error ? err.message : '엔트리를 저장하지 못했습니다.' };
   }
+
+  revalidatePath(`/ticker/${tickerId}`);
+  redirect(`/ticker/${tickerId}`);
 };
 
 export const deleteEntry = async (formData: FormData): Promise<void> => {

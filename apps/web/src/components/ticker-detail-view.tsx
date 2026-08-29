@@ -60,7 +60,7 @@ export function TickerDetailView({ ticker, entries, filter }: TickerDetailViewPr
           <iframe
             title={`${ticker.symbol} chart`}
             srcDoc={chartHtml}
-            sandbox='allow-scripts allow-same-origin'
+            sandbox='allow-scripts'
             className='h-full w-full border-0'
           />
         </div>
