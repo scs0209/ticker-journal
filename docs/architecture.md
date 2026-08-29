@@ -109,7 +109,7 @@ shared는 `main`/`types`가 `dist/`를 가리키므로 **앱 실행 전 `pnpm --
 |------|------|----------------|
 | 관심종목 | `app/index.tsx` | 목록 + 추가/삭제 (실데이터) |
 | 종목 상세 | `app/ticker/[id].tsx` | WebView 차트 + 타임라인 + FAB로 엔트리 추가 |
-| Auth | (추가 예정) | 매직링크 로그인 / 세션 / 로그아웃 |
+| Auth | `app/login.tsx` · `app/signup.tsx` · `app/auth/callback.tsx` | 이메일/비번 · 매직링크 · Google OAuth · 세션 게이트 (Phase 0 완료) |
 
 **네비게이션**: Expo Router Stack (`관심종목` → `종목`).
 
@@ -122,11 +122,17 @@ shared는 `main`/`types`가 `dist/`를 가리키므로 **앱 실행 전 `pnpm --
 
 | 화면 | 상태 |
 |------|------|
-| 홈(관심종목 목록) · 로그인/회원가입 · 콜백 | Phase 0 완료 |
+| 홈(관심종목 목록) | Phase 0 완료 |
+| Web Auth (로그인/회원가입/콜백) | Phase 0 완료 |
 | entries 검색 (`q`, page size 20) | Phase 1 |
-| 종목 상세 + TradingView (타임라인 조회 · 엔트리 CRUD) | Phase 1 |
+| 종목 상세 + 차트 (타임라인 조회 · 엔트리 CRUD) | Phase 1 |
 
 검색 범위 (`docs/design.md`): `entries.body|note|reason|title|url` 및 ticker `symbol`/`name`에 ILIKE. 결과 = entry 리스트 → 종목 상세 링크.
+
+**차트 정책** (모바일과 동일, `packages/shared` `buildChartHtml`)
+
+- US: TradingView symbol embed (iframe `srcDoc`).
+- KR: embed 미지원·불안정 시 **fallback UI** (심볼·안내 문구).
 
 ---
 
@@ -377,4 +383,4 @@ Phase 0 추가 권장:
 | 2026-08-15 | 모바일 매직링크 콜백·웹 세션 캐시 헤더 반영 |
 | 2026-08-19 | 이메일/비번 회원가입·로그인 + Google OAuth 추가 |
 | 2026-08-20 | 콜백 open-redirect·세션 캐시 헤더·entries UPDATE ticker 소유권·모바일 Google WebBrowser |
-| 2026-08-25 | Phase 0 머지 후 Phase 1(웹 검색·상세) 착수 준비 — Auth는 Phase 0에서 완료로 표기 |
+| 2026-08-25 | Phase 0 머지 후 Phase 1(웹 검색·상세) 착수 준비 — Web·Mobile Auth Phase 0 완료로 표기 |

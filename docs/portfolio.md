@@ -180,8 +180,6 @@ flowchart TB
 - `@supabase/ssr` + Next 16 `proxy.ts` 세션 갱신
 - `/login` 매직링크, `/auth/callback` 코드 교환
 - 홈에서 동일 계정 관심종목 조회
-- `/search?q=` entries ILIKE 검색 (페이지 20) + 종목 상세 링크
-- `/ticker/[id]` TradingView iframe + 타임라인 필터 + 엔트리 CRUD (server actions)
 
 ### 1.9 Phase 1 — 웹 검색·상세 (2026-08-29)
 

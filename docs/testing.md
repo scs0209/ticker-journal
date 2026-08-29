@@ -18,7 +18,7 @@
 | shared 단위 | Zod 스키마, `buildChartHtml` | Vitest | supabase/OTP를 목킹하고 `toHaveBeenCalled` |
 | mobile 단위 | (Maestro E2E 예정) | jest-expo | expo-router/Auth를 목킹한 화면 테스트 |
 | 웹 컴포넌트 | 웹 순수 뷰만 (`HomeView` props → 텍스트) | RTL | 라우터/Auth를 목킹한 화면 테스트 |
-| 웹 E2E | 웹 사용자 플로우: 홈, 로그인 페이지 | Playwright | 매직링크 메일·실세션 (인박스 없음) |
+| 웹 E2E | 웹 사용자 플로우: 홈, 로그인, `/search` 비로그인 가드 | Playwright | 매직링크 메일·실세션 (인박스 없음) |
 
 웹 페이지 플로우 = Playwright. 웹 RTL은 **props → 텍스트**인 순수 뷰만 (예: 로그인된 `HomeView` 종목). 라우팅·폼 제출·Auth는 E2E.
 
