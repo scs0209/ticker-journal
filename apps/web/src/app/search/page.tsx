@@ -2,11 +2,12 @@ import { redirect } from 'next/navigation';
 
 import { SearchView } from '@/components/search-view';
 import { searchEntries } from '@/lib/entries';
+import { parseSearchQuery } from '@/lib/search-query';
 import { getSupabaseEnv } from '@/lib/supabase/env';
 import { createClient } from '@/lib/supabase/server';
 
 type SearchPageProps = {
-  searchParams: Promise<{ q?: string; page?: string }>;
+  searchParams: Promise<{ q?: string | string[]; page?: string | string[] }>;
 };
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
@@ -25,7 +26,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   }
 
   const params = await searchParams;
-  const query = params.q ?? '';
+  const query = parseSearchQuery(params.q);
   const result = await searchEntries(supabase, query, params.page);
 
   return (

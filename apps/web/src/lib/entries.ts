@@ -20,6 +20,7 @@ import {
   parseSearchPage,
   SEARCH_PAGE_SIZE,
   type SearchEntryHit,
+  searchSourceFetchLimit,
   toIlikePattern,
 } from '@/lib/search-query';
 
@@ -138,7 +139,7 @@ export const searchEntries = async (
     return { hits: [], page: 1, pageSize: SEARCH_PAGE_SIZE, hasMore: false, loadError: null };
   }
 
-  const fetchLimit = page * SEARCH_PAGE_SIZE;
+  const fetchLimit = searchSourceFetchLimit(page);
   const entryOr = buildEntryTextOrFilter(pattern);
   const tickerOr = buildTickerOrFilter(pattern);
 
@@ -149,6 +150,7 @@ export const searchEntries = async (
         .select('*, tickers(id, symbol, name, market)')
         .or(entryOr)
         .order('created_at', { ascending: false })
+        .order('id', { ascending: false })
         .limit(fetchLimit),
       supabase.from('tickers').select('id').or(tickerOr).limit(fetchLimit),
     ]);
@@ -164,6 +166,7 @@ export const searchEntries = async (
         .select('*, tickers(id, symbol, name, market)')
         .in('ticker_id', tickerIds)
         .order('created_at', { ascending: false })
+        .order('id', { ascending: false })
         .limit(fetchLimit);
       if (error) throw error;
       byTicker = (data ?? []) as EntryWithTickerRow[];
@@ -176,7 +179,12 @@ export const searchEntries = async (
     });
     const hits = mergeSearchHits(allHits, page);
     const totalUnique = new Map(allHits.map((h) => [h.id, h])).size;
-    const hasMore = totalUnique > page * SEARCH_PAGE_SIZE;
+    const pageEnd = page * SEARCH_PAGE_SIZE;
+    const sourceAtLimit =
+      (byText.data?.length ?? 0) >= fetchLimit ||
+      byTicker.length >= fetchLimit ||
+      (matchingTickers.data?.length ?? 0) >= fetchLimit;
+    const hasMore = totalUnique > pageEnd || sourceAtLimit;
 
     return { hits, page, pageSize: SEARCH_PAGE_SIZE, hasMore, loadError: null };
   } catch (err) {
