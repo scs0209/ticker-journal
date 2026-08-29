@@ -1,4 +1,6 @@
-import { buildChartHtml } from '../lib/chart';
+import { describe, expect, it } from 'vitest';
+
+import { buildChartHtml } from './chart';
 
 describe('buildChartHtml', () => {
   it('US 심볼에 TradingView 위젯을 넣는다', () => {
