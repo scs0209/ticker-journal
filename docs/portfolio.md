@@ -10,7 +10,7 @@
 | 스택 | Expo (React Native), Expo Router, Next.js 16, TypeScript 7, Zod, pnpm monorepo, Turborepo, Biome, WebView, Vitest, RTL, jest-expo, Playwright, Supabase (Auth + Postgres + RLS), (예정) EAS Submit |
 | 레포 | https://github.com/scs0209/ticker-journal |
 | 설계 문서 | `docs/design.md` · `docs/architecture.md` |
-| 현재 브랜치 | `feat/phase-0-auth-crud` |
+| 현재 브랜치 | `feat/phase-1-web-search-detail` |
 
 ---
 
@@ -39,8 +39,8 @@ flowchart LR
   B --> D[타임라인<br/>memo / link / trade]
   D -->|FAB 추가| E[엔트리 작성]
   E --> D
-  D -.동일 계정.-> F[웹 로그인·관심종목 조회]
-  F --> B
+  D -.동일 계정.-> F[웹 검색·아카이브]
+  F -->|종목 링크| G[웹 종목 상세<br/>차트 + CRUD]
 ```
 
 ### 0.3 시스템 아키텍처
@@ -179,7 +179,22 @@ flowchart TB
 
 - `@supabase/ssr` + Next 16 `proxy.ts` 세션 갱신
 - `/login` 매직링크, `/auth/callback` 코드 교환
-- 홈에서 동일 계정 관심종목 조회 (검색·상세는 Phase 1)
+- 홈에서 동일 계정 관심종목 조회
+- `/search?q=` entries ILIKE 검색 (페이지 20) + 종목 상세 링크
+- `/ticker/[id]` TradingView iframe + 타임라인 필터 + 엔트리 CRUD (server actions)
+
+### 1.9 Phase 1 — 웹 검색·상세 (2026-08-29)
+
+**공유**
+
+- `buildChartHtml`을 `packages/shared`로 이동 (앱·웹 동일 차트 HTML)
+
+**웹**
+
+- `/search`: `entries` 텍스트 필드 + ticker `symbol`/`name` ILIKE, merge·dedupe·페이지 20
+- `/ticker/[id]`: US TradingView iframe / KR fallback, 필터 칩, memo/link/trade 추가·삭제
+- 홈: 검색 폼 + 관심종목 → 상세 Link
+- 단위: `search-query`, `entry-format`, `SearchView` RTL; E2E: `/search` 비로그인 → `/login`
 
 ### 1.7 테스트 · CI (2026-08-15)
 
@@ -191,7 +206,7 @@ flowchart TB
 
 - [x] Phase 0 구현: Supabase Auth + 모바일 CRUD + 웹 세션/목록 (`feat/phase-0-auth-crud`)
 - [x] Phase 0 실계정 스모크: 앱에서 종목·entry 생성 후 웹에서 동일 관심종목 목록 확인
-- [ ] Phase 1: 웹 entries 검색·종목 상세
+- [ ] Phase 1: 웹 entries 검색·종목 상세 (구현 완료, 실계정 스모크 대기)
 - [ ] Phase 2: EAS → App Store / Play Store
 - [ ] v1.1 공유 시트 / v2 AI 브리핑
 
@@ -213,6 +228,7 @@ flowchart TB
 | Auth | `detectSessionInUrl: false`면 딥링크만으로는 세션이 안 생김 | `Linking`으로 code 교환·토큰 `setSession` |
 | CLI | `config.toml`을 JSON으로 두면 supabase CLI가 못 읽음 | 실제 TOML로 교체 |
 | 차트 | HTML escape를 JS 문자열에 쓰면 쿼트 인젝션·이중 인코딩 | `JSON.stringify`로 위젯 심볼 삽입 |
+| Phase 1 | entries 텍스트 OR + ticker symbol/name OR를 PostgREST 한 쿼리로 못 묶음 | 두 쿼리 merge·dedupe 후 페이지 20 슬라이스 |
 
 ---
 
@@ -227,6 +243,8 @@ flowchart TB
 - Next 16에서는 edge 세션 갱신을 `proxy` 컨벤션으로 맞추는 편이 경고·미래 호환에 유리하다.
 - RN에서 매직링크는 redirect URL만 맞추는 게 아니라 **콜백 URL → `exchangeCodeForSession` / `setSession`** 까지 연결해야 한다.
 - `@supabase/ssr`가 넘기는 no-cache 헤더를 응답에 안 붙이면 세션 쿠키가 CDN에 캐시될 수 있다.
+- `buildChartHtml`을 shared로 두면 WebView·iframe이 같은 HTML 계약을 공유한다.
+- `'use server'` 파일은 sync export가 불가 — 파서·헬퍼는 별도 lib로 분리한다.
 
 ---
 
@@ -241,10 +259,10 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 - 문제 정의·MVP 3화면 와이어프레임·아키텍처/ADR 문서화
 - pnpm/Turborepo 모노레포 (`mobile` / `web` / `shared`) + Biome + TypeScript 7
 - Expo Router · Auth(이메일/비번 + 매직링크 + Google OAuth) · 관심종목/엔트리 CRUD · TradingView WebView
-- Next.js `@supabase/ssr` 로그인·콜백·관심종목 조회
+- Next.js `@supabase/ssr` 로그인·콜백·관심종목 조회 + entries 검색·종목 상세(CRUD)
 - Postgres 스키마 + RLS, Zod 공유 스키마로 입력 검증
 - Vitest / RTL / Playwright / jest-expo 테스트 계층 + GitHub Actions CI
-- (예정) entries 웹 검색, 스토어 2곳 배포
+- (예정) 스토어 2곳 배포
 
 ### 성과 / 임팩트
 
@@ -275,3 +293,4 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 | 2026-08-25 | 중복 종목 Alert 문구, Sonda 번들 분석 스크립트 |
 | 2026-08-25 | Phase 0 실계정 스모크 완료로 마감 |
 | 2026-08-27 | `main` 최신화 후 `feat/phase-1-web-search-detail` 착수 |
+| 2026-08-29 | Phase 1: 웹 `/search`·`/ticker/[id]`, `buildChartHtml` shared 이동, 테스트 25건(web) |

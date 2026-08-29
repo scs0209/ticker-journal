@@ -53,10 +53,12 @@
 - `[x]` 모노레포 테스트 **4계층** + 커버리지(`pnpm test:coverage`) + GitHub Actions(`check`/`typecheck`/`test`/E2E) + Biome + TypeScript 7으로 품질 게이트 유지
 - `[x]` 본인 계정으로 관심종목 **3**개·entry 입력 후 웹에서 **동일 관심종목 목록** 수동 스모크 완료
 
-### Phase 1 (웹 검색·상세)
+### Phase 1 (웹 검색·상세) — 구현 완료, 스모크 대기
 
-- `[ ]` 웹 검색(페이지 20)으로 과거 메모 회수 **평균 __초** (이전: 노션/시트 수 분)
-- `[ ]` 종목 상세 + TradingView를 웹에도 제공해 앱·웹 **읽기 경로 대칭**
+- `[x]` 웹 `/search?q=` ILIKE 검색(페이지 20) + 결과 → 종목 상세 Link
+- `[x]` `/ticker/[id]` TradingView iframe(US) / KR fallback + 타임라인 필터 + 엔트리 CRUD
+- `[ ]` 앱에서 입력한 memo/link/trade를 웹 검색으로 회수하는 **실계정 스모크**
+- `[ ]` 웹 검색 회수 **평균 __초** (이전: 노션/시트 수 분) — 스모크 후 수치 기록
 
 ### Phase 2 (스토어 = 이력서 임팩트 피크)
 

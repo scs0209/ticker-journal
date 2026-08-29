@@ -25,6 +25,10 @@ describe('HomeView', () => {
       />,
     );
     expect(screen.getByText(/AAPL/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /AAPL/i })).toHaveAttribute(
+      'href',
+      '/ticker/11111111-1111-4111-8111-111111111111',
+    );
     expect(screen.getByText('you@example.com')).toBeInTheDocument();
   });
 

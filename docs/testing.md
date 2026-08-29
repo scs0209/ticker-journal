@@ -5,6 +5,7 @@
 1. **깨지면 사용자가 알아채는가?** (스키마 변환, 잘못된 화면, 잘못된 리다이렉트)
 2. **이미 위 레이어가 같은 동작을 보는가?** (E2E가 커버하면 컴포넌트/단위를 중복하지 않는다)
 3. **성공 조건이 목 호출인가?** 그러면 잘못된 테스트다. 화면 텍스트, URL, 순수 함수 반환값만 assert한다.
+4. **환경마다 달라지는가?** `toLocaleString`·타임존·날짜 “지금”·랜덤·OR로 “뭐든 통과”하는 assert는 flaky/무의미 → 작성하지 않는다.
 
 `describe`/`it`/`test` 설명은 **한국어**. 대상 이름(`CreateTickerSchema`, `HomeView`)만 영어 식별자를 쓴다.
 
@@ -14,8 +15,8 @@
 
 | 레이어 | 대상 | 도구 | 하지 않는 것 |
 |--------|------|------|----------------|
-| shared 단위 | Zod 스키마 정규화/거부 | Vitest | supabase/OTP를 목킹하고 `toHaveBeenCalled` |
-| mobile 단위 | `buildChartHtml` | jest-expo | expo-router/Auth를 목킹한 화면 테스트 |
+| shared 단위 | Zod 스키마, `buildChartHtml` | Vitest | supabase/OTP를 목킹하고 `toHaveBeenCalled` |
+| mobile 단위 | (Maestro E2E 예정) | jest-expo | expo-router/Auth를 목킹한 화면 테스트 |
 | 웹 컴포넌트 | 웹 순수 뷰만 (`HomeView` props → 텍스트) | RTL | 라우터/Auth를 목킹한 화면 테스트 |
 | 웹 E2E | 웹 사용자 플로우: 홈, 로그인 페이지 | Playwright | 매직링크 메일·실세션 (인박스 없음) |
 
@@ -23,11 +24,12 @@
 
 ## 지금 허용된 테스트
 
-- `packages/shared` — 스키마 정규화/거부
-- `apps/mobile/lib/chart.ts` — US 위젯 / KR fallback HTML
+- `packages/shared` — 스키마 정규화/거부, `buildChartHtml` (US 위젯 / KR fallback)
 - `apps/web` `resolveAuthCallbackPath` — 콜백 성공/실패 경로 (웹 단위)
 - `apps/web` `HomeView` — 로그인된 종목 표시, 조회 실패 메시지 (E2E에 세션 없음)
-- Playwright — `/`, `/login`이 뜨는지
+- `apps/web` `SearchView` — 검색 실패 vs 빈 결과 구분 (E2E에 세션 없음)
+- `apps/web` `search-query` — ILIKE escape, merge·페이지 (deterministic)
+- Playwright — `/`, `/login`, `/search` 비로그인 가드
 
 모바일 화면(관심종목·상세)은 라우터 없이 마운트되지 않는다. 구현 mock으로 목록을 그리는 테스트는 하지 않고, Maestro E2E에서 다룬다.
 
@@ -48,9 +50,9 @@ pnpm run ci            # Biome + typecheck + unit (pre-commit 훅과 동일)
 
 | 패키지 | 포함 파일 | Lines (참고) |
 |--------|-----------|--------------|
-| shared | `src/index.ts` (스키마) | ~100% |
-| web | `redirect.ts`, `HomeView` | ~81% |
-| mobile | `lib/chart.ts` | ~100% |
+| shared | `src/index.ts`, `src/chart.ts` | ~100% |
+| web | `redirect.ts`, `HomeView`, `SearchView`, `search-query` | 참고 |
+| mobile | (Maestro 예정) | — |
 
 로컬: Husky `pre-commit`은 `pnpm run ci`만 실행한다 (`check` + `typecheck` + `test`).  
 GitHub Actions는 여기에 **`test:coverage` · `check:db-types`(local Supabase) · Playwright E2E**를 더 돌린다. 커밋이 통과해도 CI가 더 넓은 게이트다.
