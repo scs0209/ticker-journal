@@ -193,6 +193,7 @@ flowchart TB
 - `/ticker/[id]`: US TradingView iframe / KR fallback, 필터 칩, memo/link/trade 추가·삭제
 - 홈: 검색 폼 + 관심종목 → 상세 Link
 - 단위: `search-query`, `entry-format`, `SearchView` RTL; E2E: `/search` 비로그인 → `/login`
+- **2026-08-30** 실계정 스모크: 홈·검색·종목 상세·앱→웹 회수 **4항목** 수동 확인
 
 ### 1.7 테스트 · CI (2026-08-15)
 
@@ -204,7 +205,7 @@ flowchart TB
 
 - [x] Phase 0 구현: Supabase Auth + 모바일 CRUD + 웹 세션/목록 (`feat/phase-0-auth-crud`)
 - [x] Phase 0 실계정 스모크: 앱에서 종목·entry 생성 후 웹에서 동일 관심종목 목록 확인
-- [ ] Phase 1: 웹 entries 검색·종목 상세 (구현 완료, 실계정 스모크 대기)
+- [x] Phase 1: 웹 entries 검색·종목 상세 (구현 + **2026-08-30 실계정 스모크 4항목**)
 - [ ] Phase 2: EAS → App Store / Play Store
 - [ ] v1.1 공유 시트 / v2 AI 브리핑
 
@@ -292,3 +293,5 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 | 2026-08-25 | Phase 0 실계정 스모크 완료로 마감 |
 | 2026-08-27 | `main` 최신화 후 `feat/phase-1-web-search-detail` 착수 |
 | 2026-08-29 | Phase 1: 웹 `/search`·`/ticker/[id]`, `buildChartHtml` shared 이동, 테스트 25건(web) |
+| 2026-08-29 | 검색 회수 측정: Cursor 세션 + Playwright — 홈 1.2s, `/search` 평균 1.2s, entries 0 → 성공률 0% |
+| 2026-08-30 | Phase 1 실계정 스모크 4항목 수동 확인 → Phase 1 마감 |

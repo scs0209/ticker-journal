@@ -1,0 +1,64 @@
+{
+  "measured_at": "2026-08-29T14:26:01.179Z",
+  "base_url": "http://localhost:3000",
+  "logged_in": true,
+  "account": {
+    "email": "tjdckdtn2465@naver.com",
+    "tickers": 3,
+    "entries": 0
+  },
+  "home_load_ms": 1198,
+  "home_to_search_ux_ms": 1117,
+  "ux_query": "memo",
+  "queries": [
+    {
+      "query": "memo",
+      "url": "http://localhost:3000/search?q=memo",
+      "page_load_ms": 1047,
+      "hit_count_visible": 0,
+      "status": "no_hits"
+    },
+    {
+      "query": "link",
+      "url": "http://localhost:3000/search?q=link",
+      "page_load_ms": 1073,
+      "hit_count_visible": 0,
+      "status": "no_hits"
+    },
+    {
+      "query": "trade",
+      "url": "http://localhost:3000/search?q=trade",
+      "page_load_ms": 1335,
+      "hit_count_visible": 0,
+      "status": "no_hits"
+    },
+    {
+      "query": "AAPL",
+      "url": "http://localhost:3000/search?q=AAPL",
+      "page_load_ms": 1536,
+      "hit_count_visible": 0,
+      "status": "no_hits"
+    },
+    {
+      "query": "005930",
+      "url": "http://localhost:3000/search?q=005930",
+      "page_load_ms": 1503,
+      "hit_count_visible": 0,
+      "status": "no_hits"
+    }
+  ],
+  "summary": {
+    "attempts": 5,
+    "success": 0,
+    "success_rate_pct": 0,
+    "avg_page_load_ms": 1299,
+    "min_page_load_ms": 1047,
+    "max_page_load_ms": 1536,
+    "avg_page_load_ms_ok": null
+  },
+  "notes": [
+    "page_load_ms = Playwright networkidle (SSR + Supabase + 렌더).",
+    "home_to_search_ux_ms = 홈 입력 → /search 결과까지.",
+    "Before(노션/시트)는 수동 — 이번 자동 측정 미포함."
+  ]
+}
