@@ -12,7 +12,12 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'text-summary', 'json-summary', 'html'],
       reportsDirectory: './coverage',
-      include: ['src/app/auth/callback/redirect.ts', 'src/components/home-view.tsx'],
+      include: [
+        'src/app/auth/callback/redirect.ts',
+        'src/components/home-view.tsx',
+        'src/components/search-view.tsx',
+        'src/lib/search-query.ts',
+      ],
       exclude: ['src/**/*.test.*'],
       all: true,
     },

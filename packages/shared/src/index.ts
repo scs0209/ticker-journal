@@ -98,4 +98,6 @@ export type TimelineFilter = z.infer<typeof TimelineFilterSchema>;
 
 export const APP_NAME = 'Ticker Journal';
 
+export { type AuthErrorLike, formatAuthError } from './auth-errors';
+export { buildChartHtml } from './chart';
 export type { Database, EntryInsert, EntryRow, TickerInsert, TickerRow } from './database-exports';

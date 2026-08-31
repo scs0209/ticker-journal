@@ -1,4 +1,5 @@
 import {
+  buildChartHtml,
   type CreateEntryInput,
   CreateEntrySchema,
   type Entry,
@@ -10,10 +11,8 @@ import { Redirect, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { WebView } from 'react-native-webview';
-
 import { createEntry, deleteEntry, getTicker, listEntries } from '../../lib/api';
 import { useAuth } from '../../lib/auth';
-import { buildChartHtml } from '../../lib/chart';
 
 const FILTERS = TimelineFilterSchema.options;
 

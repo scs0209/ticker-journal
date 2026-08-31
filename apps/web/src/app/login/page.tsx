@@ -1,5 +1,6 @@
 'use client';
 
+import { formatAuthError } from '@ticker-journal/shared';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useActionState, useState } from 'react';
@@ -34,7 +35,7 @@ function LoginForm() {
     try {
       const supabase = createClient();
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return { message: null, error: error.message };
+      if (error) return { message: null, error: formatAuthError(error, '로그인에 실패했습니다.') };
       window.location.href = '/';
       return { message: null, error: null };
     } catch (err) {
@@ -51,7 +52,7 @@ function LoginForm() {
         email,
         options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
       });
-      if (error) return { message: null, error: error.message };
+      if (error) return { message: null, error: formatAuthError(error, '로그인 요청에 실패했습니다.') };
       return { message: '매직링크를 보냈습니다. 메일함에서 링크를 열어 주세요.', error: null };
     } catch (err) {
       return { message: null, error: err instanceof Error ? err.message : '로그인 요청에 실패했습니다.' };
@@ -65,6 +66,7 @@ function LoginForm() {
 
   const state = mode === 'password' ? pwState : mlState;
   const pending = pwPending || mlPending;
+  const formError = state.error ?? oauthError ?? callbackError;
 
   const handleGoogle = async () => {
     setOauthError(null);
@@ -79,10 +81,10 @@ function LoginForm() {
         options: { redirectTo: `${window.location.origin}/auth/callback` },
       });
       if (error) {
-        setOauthError(error.message);
+        setOauthError(formatAuthError(error, 'Google 로그인에 실패했습니다.'));
       }
     } catch (err) {
-      setOauthError(err instanceof Error ? err.message : 'Google 로그인에 실패했습니다.');
+      setOauthError(formatAuthError(err, 'Google 로그인에 실패했습니다.'));
     }
   };
 
@@ -142,6 +144,15 @@ function LoginForm() {
             </>
           ) : null}
 
+          {formError ? (
+            <div role='alert' className='rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800'>
+              <p className='font-medium'>
+                {mode === 'password' ? '로그인할 수 없습니다' : '요청을 처리할 수 없습니다'}
+              </p>
+              <p className='mt-1 leading-6'>{formError}</p>
+            </div>
+          ) : null}
+
           <button
             type='submit'
             disabled={pending || !configured}
@@ -179,9 +190,6 @@ function LoginForm() {
           <p className='text-sm text-amber-700'>apps/web/.env 에 Supabase URL/KEY를 넣은 뒤 next dev를 재시작하세요.</p>
         ) : null}
         {state.message ? <p className='text-sm text-emerald-700'>{state.message}</p> : null}
-        {(state.error ?? oauthError ?? callbackError) ? (
-          <p className='text-sm text-red-700'>{state.error ?? oauthError ?? callbackError}</p>
-        ) : null}
       </div>
     </main>
   );

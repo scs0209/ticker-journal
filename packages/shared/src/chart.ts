@@ -1,6 +1,4 @@
-import type { Market } from '@ticker-journal/shared';
-
-export const buildChartHtml = (market: Market, symbol: string): string => {
+export const buildChartHtml = (market: 'US' | 'KR', symbol: string): string => {
   if (market === 'KR') {
     return `<!DOCTYPE html>
 <html>

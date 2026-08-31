@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { formatAuthError } from '@ticker-journal/shared';
 import { Link, Redirect } from 'expo-router';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -58,7 +59,7 @@ export default function LoginScreen() {
         setResult({ message: '매직링크를 이메일로 보냈습니다. 메일함에서 링크를 열어 주세요.' });
       }
     } catch (err) {
-      setResult({ error: err instanceof Error ? err.message : '로그인에 실패했습니다.' });
+      setResult({ error: formatAuthError(err, '로그인에 실패했습니다.') });
     }
   });
 
@@ -69,7 +70,7 @@ export default function LoginScreen() {
     try {
       await signInWithGoogle();
     } catch (err) {
-      setResult({ error: err instanceof Error ? err.message : 'Google 로그인에 실패했습니다.' });
+      setResult({ error: formatAuthError(err, 'Google 로그인에 실패했습니다.') });
     } finally {
       setOauthPending(false);
     }
