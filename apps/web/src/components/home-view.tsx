@@ -21,14 +21,22 @@ export function HomeView({ email = null, tickers = [], configured = false, loadE
             <h1 className='text-4xl font-semibold tracking-tight'>웹 아카이브</h1>
           </div>
           {email ? (
-            <form action={signOut}>
-              <button
-                type='submit'
+            <div className='flex gap-2'>
+              <Link
+                href='/settings'
                 className='rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-100'
               >
-                로그아웃
-              </button>
-            </form>
+                설정
+              </Link>
+              <form action={signOut}>
+                <button
+                  type='submit'
+                  className='rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-100'
+                >
+                  로그아웃
+                </button>
+              </form>
+            </div>
           ) : (
             <Link
               href='/login'

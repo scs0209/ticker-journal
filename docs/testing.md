@@ -28,8 +28,9 @@
 - `apps/web` `resolveAuthCallbackPath` — 콜백 성공/실패 경로 (웹 단위)
 - `apps/web` `HomeView` — 로그인된 종목 표시, 조회 실패 메시지 (E2E에 세션 없음)
 - `apps/web` `SearchView` — 검색 실패 vs 빈 결과 구분 (E2E에 세션 없음)
+- `apps/web` `SettingsView` — 계정 이메일·삭제 경고·프라이버시 링크
 - `apps/web` `search-query` — ILIKE escape, merge·페이지 (deterministic)
-- Playwright — `/`, `/login`, `/search` 비로그인 가드 (dev 서버에 Supabase placeholder env)
+- Playwright — `/`, `/login`, `/search` 비로그인 가드, `/privacy`, `/settings` → `/login` (dev 서버에 Supabase placeholder env)
 
 Playwright `webServer`는 `NEXT_PUBLIC_SUPABASE_*` placeholder를 넣어 `configured=true`·세션 없음 상태를 만든다. CI에 실 Supabase/매직링크 세션은 없다.
 

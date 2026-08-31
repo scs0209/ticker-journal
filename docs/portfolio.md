@@ -10,7 +10,7 @@
 | 스택 | Expo (React Native), Expo Router, Next.js 16, TypeScript 7, Zod, pnpm monorepo, Turborepo, Biome, WebView, Vitest, RTL, jest-expo, Playwright, Supabase (Auth + Postgres + RLS), (예정) EAS Submit |
 | 레포 | https://github.com/scs0209/ticker-journal |
 | 설계 문서 | `docs/design.md` · `docs/architecture.md` |
-| 현재 브랜치 | `feat/phase-1-web-search-detail` |
+| 현재 브랜치 | `feat/phase-2-store` |
 
 ---
 
@@ -195,6 +195,22 @@ flowchart TB
 - 단위: `search-query`, `entry-format`, `SearchView` RTL; E2E: `/search` 비로그인 → `/login`
 - **2026-08-30** 실계정 스모크: 홈·검색·종목 상세·앱→웹 회수 **4항목** 수동 확인
 
+### 1.10 Phase 2 — 스토어 (2026-08-31 착수)
+
+**백엔드**
+
+- `delete_own_account()` RPC — auth.users 삭제 시 tickers/entries cascade
+
+**앱·웹**
+
+- `/privacy` 개인정보 처리방침 (스토어 URL용)
+- `/settings` · 앱 설정: 로그아웃·계정 삭제·프라이버시 링크
+- `eas.json` (development / preview / production)
+
+**문서**
+
+- `docs/phase-2-store.md` — EAS·심사·데모 계정 체크리스트
+
 ### 1.7 테스트 · CI (2026-08-15)
 
 - 라우터 mock 없이 못 도는 모바일 화면 테스트는 삭제. 화면은 Maestro E2E
@@ -206,7 +222,7 @@ flowchart TB
 - [x] Phase 0 구현: Supabase Auth + 모바일 CRUD + 웹 세션/목록 (`feat/phase-0-auth-crud`)
 - [x] Phase 0 실계정 스모크: 앱에서 종목·entry 생성 후 웹에서 동일 관심종목 목록 확인
 - [x] Phase 1: 웹 entries 검색·종목 상세 (구현 + **2026-08-30 실계정 스모크 4항목**)
-- [ ] Phase 2: EAS → App Store / Play Store
+- [ ] Phase 2: EAS → App Store / Play Store (**2026-08-31** 심사 경로·EAS 스캐폴드 착수)
 - [ ] v1.1 공유 시트 / v2 AI 브리핑
 
 ---
@@ -295,3 +311,4 @@ Ticker Journal은 주식 리서치 스크랩과 매매 이유를 종목 타임�
 | 2026-08-29 | Phase 1: 웹 `/search`·`/ticker/[id]`, `buildChartHtml` shared 이동, 테스트 25건(web) |
 | 2026-08-29 | 검색 회수 측정: Cursor 세션 + Playwright — 홈 1.2s, `/search` 평균 1.2s, entries 0 → 성공률 0% |
 | 2026-08-30 | Phase 1 실계정 스모크 4항목 수동 확인 → Phase 1 마감 |
+| 2026-08-31 | Phase 2 착수: 계정 삭제 RPC, privacy/settings, EAS 프로필, `docs/phase-2-store.md` |

@@ -97,6 +97,7 @@ export const TimelineFilterSchema = z.enum(['all', 'memo', 'link', 'trade']);
 export type TimelineFilter = z.infer<typeof TimelineFilterSchema>;
 
 export const APP_NAME = 'Ticker Journal';
+export const PRIVACY_POLICY_PATH = '/privacy';
 
 export { type AuthErrorLike, formatAuthError } from './auth-errors';
 export { buildChartHtml } from './chart';
