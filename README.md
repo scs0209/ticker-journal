@@ -61,7 +61,7 @@ pnpm typecheck
 
 - Phase 0: Auth + CRUD (앱) — 브랜치 `feat/phase-0-auth-crud`
 - Phase 1: 웹 검색/상세
-- Phase 2: App Store + Play Store
+- Phase 2: App Store + Play Store — [`docs/phase-2-store.md`](docs/phase-2-store.md)
 - v1.1 공유 시트 / v2 AI 주간 브리핑
 
 ### Phase 0 로컬 설정
