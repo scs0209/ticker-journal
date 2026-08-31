@@ -125,7 +125,7 @@ shared는 `main`/`types`가 `dist/`를 가리키므로 **앱 실행 전 `pnpm --
 | 홈(관심종목 목록) | Phase 0 완료 |
 | Web Auth (로그인/회원가입/콜백) | Phase 0 완료 |
 | entries 검색 (`q`, page size 20) | Phase 1 |
-| 종목 상세 + 차트 (타임라인 조회 · 엔트리 CRUD) | Phase 1 |
+| 종목 상세 + 차트 US TradingView · KR fallback (타임라인 조회 · 엔트리 CRUD) | Phase 1 |
 
 검색 범위 (`docs/design.md`): `entries.body|note|reason|title|url` 및 ticker `symbol`/`name`에 ILIKE. 결과 = entry 리스트 → 종목 상세 링크.
 
